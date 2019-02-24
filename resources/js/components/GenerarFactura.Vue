@@ -1,0 +1,260 @@
+<template>
+    <div>
+        <div class="card">
+            <div class="card-header">Factura Electrónica</div>
+            <div class="card-body">
+                <form @submit.prevent="generarDoc">                      
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="fecha">Tipo de comprobante</label>
+                            <select name="tipo" id="tipo" class="form-control">
+                                <option
+                                v-for="(tipo, index) in tipos"
+                                :key="index"
+                                >{{tipo}}</option>                               
+                            </select>
+                        </div>
+                    </div>  
+                    <h4>Comprobante</h4>                  
+                    <div class="row mb-3">                           
+                        <div class="col-md-3">
+                            <label for="fecha">Fecha de Emision</label>
+                            <input type="date" name="fecha" id="fecha" class="form-control">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="codigo">Serie de Emision</label>
+                            <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Ingrese la serie del comprobante">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo">Numero de Emision</label>
+                            <input type="text" class="form-control" name="num" id="num" placeholder="Ingrese el numero del comprobante">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo">Tipo de Moneda</label>
+                            <input type="text" class="form-control" value="soles">
+                        </div>
+                    </div>
+                    <h4>Cliente</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="tipo">Tipo de documento</label>
+                                <select name="tipo" id="tipo" class="form-control">
+                                <option v-for="tipo in tipos_doc"
+                                        :key="tipo">{{tipo}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="num_doc">Numero de documento</label>
+                            <input type="text" class="form-control" name="num_doc" id="num_doc" placeholder="Ingrese numero del documento">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nombre">Apellidos y nombres o razon social</label>
+                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese los datos o razon del cliente">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="direccion">Direccion del cliente</label>
+                            <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese la direccion del cliente">
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12 d-flex justify-content-end">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#agregarCliente">
+                            Agregar productos
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <table class="table table-hover table-responsive">
+                                <thead>
+                                    <th class="text-center">Codigo</th>                                   
+                                    <th class="text-center">Descripcion</th>
+                                    <th class="text-center">Precio</th>
+                                    <th class="text-center">Cantidad</th>
+                                    <th class="text-center">Sub. total</th>
+                                    <th class="text-center">IGV</th>
+                                    <th class="text-center">Importe</th>
+                                    <th class="text-center"></th> 
+                                </thead>
+                                <tbody>
+                                    <template v-if="cart.length > 0">
+                                        <tr v-for="item in cart" 
+                                            :key="item.id">
+                                            <td>{{item.id}}</td>                                       
+                                            <td class="w-50">{{item.description}}</td>
+                                            <td class="text-right">{{item.price}}</td>
+                                            <td>
+                                                <input type="number" min="1" class="form-control" 
+                                                :value="item.quantity" style="width:70px" 
+                                                @change="updateQtyProductFromCart($event, item.id)"/>
+                                            </td>
+                                            <td class="text-right">
+                                                {{ item.price * item.quantity}}
+                                            </td>
+                                            <td class="text-right">
+                                                {{parseFloat((item.price * item.quantity) * 0.18).toFixed(2) }}
+                                            </td>
+                                            <td class="text-right">
+                                                {{(item.price * item.quantity) + ((item.price * item.quantity) * 0.18)}}
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger" 
+                                                    @click="removeProductoFromCart(item)">
+                                                    X
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                    <template v-else>
+                                        <tr>No tienes productos agregados....!</tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="direccion">Observacion: </label>
+                                <textarea v-model="observation" class="form-control" cols="30" rows="5" placeholder="Escribe aqui una observacion..."></textarea>                             
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Resumen</h5>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <label for="subtotal">Subtotal: </label>
+                                    <label for="subtotal">s/. {{subTotal()}}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <label for="igv">IGV: (18%) </label>
+                                    <label for="igv">s/. {{igvSubTotal()}}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <label for="total" class="font-weight-bold">Total </label>
+                                    <label class="font-weight-bold text-primary">s/. {{Total()}}</label>
+                                </div>
+                            </div>
+                            <div class="row row mt-3">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <input type="button" class="btn btn-danger" value="Cancelar"> 
+                                    <input type="submit" class="btn btn-primary" value="Generar documento">                           
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <modal-product :products="products" @agregar="addProductToCart"></modal-product>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import ModalProduct from './ModalProduct.vue'
+export default {
+    components: {ModalProduct},
+    name: "generar-factura",
+    data(){
+        return {
+            products: [],
+            tipos: [],
+            observation: '',
+            tipos_doc: [],
+            tipo_doc: 'd',
+            comprobante: [],    
+            cart: [],
+            subtotal: 0      
+        }
+    },
+    methods: {
+        getProducts(){
+            axios.get('/getProducts')
+                .then(res => {
+                    this.products = res.data.products;
+                    this.tipos = res.data.tipos;
+                    this.tipos_doc = res.data.tipos_doc;
+                })
+                .catch(error => console.log(error))
+        },
+        generarDoc(){
+            console.log(this.tipo_doc);
+        },
+        addProductToCart(product){
+            const updatedCart = [...this.cart];
+            const updatedItemIndex = updatedCart.findIndex(
+                item => item.id === product.id
+            );
+          
+            if (updatedItemIndex < 0) {
+                updatedCart.push({...product, quantity: 1});
+            }else {
+                const updatedItem = {
+                    ...updatedCart[updatedItemIndex]
+                };
+                updatedItem.quantity++;
+                updatedCart[updatedItemIndex] = updatedItem;
+            }
+            this.cart  = updatedCart;            
+        },
+        updateQtyProductFromCart(event, productId){
+            const qtyUpdated = event.target.value;
+            const updatedCart = [...this.cart];
+
+            const updatedItemIndex = updatedCart.findIndex(
+                item => item.id === productId
+            );
+
+            const updatedItem = {
+                ...updatedCart[updatedItemIndex],
+                quantity: qtyUpdated
+            };
+            updatedCart[updatedItemIndex] = updatedItem;
+            this.cart  = updatedCart;
+        },
+        removeProductoFromCart(product){
+            const updatedCart = [...this.cart];
+            const updatedItemIndex = updatedCart.findIndex(
+                item => item.id === product.id
+            );
+
+            const updatedItem = {
+                ...updatedCart[updatedItemIndex]
+            };
+
+            //updatedItem.quantity--;
+            //if (updatedItem.quantity <= 0) {
+            updatedCart.splice(updatedItemIndex, 1);
+            //}else {
+            //    updatedCart[updatedItemIndex] = updatedItem;
+            //}
+            this.cart  = updatedCart;
+        },
+        
+        subTotal(){
+            const subTotal = this.cart.map(function(item) { 
+                return (item.price * item.quantity) + ((item.price * item.quantity) * 0.18);
+            }).reduce(function(a, b) {
+                return a + b
+            }, 0)
+            return subTotal;
+        },
+        igvSubTotal(){
+            return this.subTotal() * 0.18;
+        },
+        Total(){
+            return this.subTotal() + (this.subTotal() * 0.18);
+        }
+    
+    },
+    created() {
+        this.getProducts();
+    }
+}
+</script>
