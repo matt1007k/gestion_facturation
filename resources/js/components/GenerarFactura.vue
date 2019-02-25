@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card">
-            <div class="card-header">Factura Electrónica</div>
+            <div class="card-header">Generar Factura Electrónica</div>
             <div class="card-body">
                 <form @submit.prevent="generarDoc">                      
                     <div class="row mb-3">
@@ -82,7 +82,7 @@
                                     <template v-if="cart.length > 0">
                                         <tr v-for="item in cart" 
                                             :key="item.id">
-                                            <td>{{item.id}}</td>                                       
+                                            <td>{{item.code}}</td>                                       
                                             <td class="w-50">{{item.description}}</td>
                                             <td class="text-right">{{item.price}}</td>
                                             <td>
@@ -175,7 +175,7 @@ export default {
     },
     methods: {
         getProducts(){
-            axios.get('/getProducts')
+            axios.get('/api/getProducts')
                 .then(res => {
                     this.products = res.data.products;
                     this.tipos = res.data.tipos;

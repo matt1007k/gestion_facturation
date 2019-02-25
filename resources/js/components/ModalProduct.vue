@@ -1,6 +1,6 @@
 <template>
     <div class="modal fade" id="agregarCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-lg modal-primary" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="agregarClienteModalLongTitle">Productos Disponibles</h5>
@@ -28,11 +28,11 @@
                             <template v-if="products.length > 0">
                                 <tr v-for="product in products" 
                                 :key="product.id">
-                                    <td>{{product.id}}</td>
+                                    <td>{{product.code}}</td>
                                     <td class="w-25">{{product.name}}</td>                               
                                     <td class="w-75">{{product.description}}</td>
                                     <td>{{product.price}}</td>
-                                    <td>12</td>
+                                    <td>{{product.quantity}}</td>
                                     <td>
                                         <button type="button" class="btn btn-success" @click="$emit('agregar', product)">Agregar</button>
                                     </td>

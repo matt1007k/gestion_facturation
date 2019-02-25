@@ -13,25 +13,31 @@ class ProductsTableSeeder extends Seeder
     public function run()
     {
         Product::create([
+            'code' => "P00001",
             'name' => "Producto 1",
             'price' => 25.0,
             'description' => "Descripcion del producto 1",
+            'quantity' => 50,
             'img' => "producto_1.jpg",
             'status' => "available",
         ]);
 
         Product::create([
+            'code' => "P00002",
             'name' => "Producto 2",
             'price' => 40.0,
             'description' => "Descripcion del producto 2",
+            'quantity' => 10,
             'img' => "producto_2.jpg",
             'status' => "available",
         ]);
 
         Product::create([
+            'code' => "P00003",
             'name' => "Producto 3",
             'price' => 20.0,
             'description' => "Descripcion del producto 3",
+            'quantity' => 35,
             'img' => "producto_3.jpg",
             'status' => "available",
         ]);

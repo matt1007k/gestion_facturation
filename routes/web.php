@@ -12,17 +12,19 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('productos', 'Admin\ProductsController');
-Route::get('/getProducts', 'Admin\ProductsController@getProducts')->name('getProducts');
+Route::middleware('auth')->group(function() {
+    Route::resource('productos', 'Admin\ProductsController');
 
-Route::get('/facturas', 'Admin\FacturationController@index')->name('facturas');
+    Route::get('/facturas', 'Admin\FacturationController@index')->name('facturas');
+});
+
 
 Route::get('/generar', 'Admin\FacturationController@generar')->name('generar');
 Route::post('/agregar-producto', 'Admin\FacturationController@agregarProducto')->name('agregar.producto');
