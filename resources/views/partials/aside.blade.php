@@ -23,7 +23,7 @@
             <div class="list-group-item list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Today</div>
             <div class="list-group-item list-group-item-accent-warning list-group-item-divider">
                 <div class="avatar float-right">
-                    <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
+                    <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
                 </div>
                 <div>Meeting with
                     <strong>Lucas</strong>
@@ -35,7 +35,7 @@
             </div>
             <div class="list-group-item list-group-item-accent-info">
                 <div class="avatar float-right">
-                    <img class="img-avatar" src="img/avatars/4.jpg" alt="admin@bootstrapmaster.com">
+                    <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
                 </div>
                 <div>Skype with
                     strong>Megan</strong>
@@ -46,79 +46,38 @@
                     <i class="icon-social-skype"></i>&nbsp; On-line</small>
             </div>
             <div class="list-group-item list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Tomorrow</div>
-            <div class="list-group-item list-group-item-accent-danger list-group-item-divider">
-                <div>New UI Project -
-                    <strong>deadline</strong>
-                </div>
-                <small class="text-muted mr-3">
-                    <i class="icon-calendar"></i>&nbsp; 10 - 11pm</small>
-                <small class="text-muted">
-                    <i class="icon-home"></i>&nbsp; creativeLabs HQ</small>
-                <div class="avatars-stack mt-2">
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/2.jpg" alt="admin@bootstrapmaster.com">
+                <div class="list-group-item list-group-item-accent-danger list-group-item-divider">
+                    <div>New UI Project -
+                        <strong>deadline</strong>
                     </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/3.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/4.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/5.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
+                    <small class="text-muted mr-3">
+                        <i class="icon-calendar"></i>&nbsp; 10 - 11pm</small>
+                    <small class="text-muted">
+                        <i class="icon-home"></i>&nbsp; creativeLabs HQ</small>
+                    <div class="avatars-stack mt-2">
+                        <div class="avatar avatar-xs">
+                            <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
+                        </div>
+                        <div class="avatar avatar-xs">
+                            <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="list-group-item list-group-item-accent-success list-group-item-divider">
-                <div>
-                    <strong>#10 Startups.Garden</strong> Meetup</div>
-                <small class="text-muted mr-3">
-                    <i class="icon-calendar"></i>&nbsp; 1 - 3pm</small>
-                <small class="text-muted">
-                    <i class="icon-location-pin"></i>&nbsp; Palo Alto, CA</small>
-            </div>
-            <div class="list-group-item list-group-item-accent-primary list-group-item-divider">
-                <div>
-                    <strong>Team meeting</strong>
+                <div class="list-group-item list-group-item-accent-success list-group-item-divider">
+                    <div>
+                        <strong>#10 Startups.Garden</strong> Meetup</div>
+                    <small class="text-muted mr-3">
+                        <i class="icon-calendar"></i>&nbsp; 1 - 3pm</small>
+                    <small class="text-muted">
+                        <i class="icon-location-pin"></i>&nbsp; Palo Alto, CA</small>
                 </div>
-                <small class="text-muted mr-3">
-                    <i class="icon-calendar"></i>&nbsp; 4 - 6pm</small>
-                <small class="text-muted">
-                    <i class="icon-home"></i>&nbsp; creativeLabs HQ</small>
-                <div class="avatars-stack mt-2">
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/2.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/3.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/4.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/5.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                    <div class="avatar avatar-xs">
-                        <img class="img-avatar" src="img/avatars/8.jpg" alt="admin@bootstrapmaster.com">
-                    </div>
-                </div>
-            </div>
             </div>
         </div>
         <div class="tab-pane p-3" id="messages" role="tabpanel">
             <div class="message">
                 <div class="py-3 pb-5 mr-3 float-left">
                     <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
+                        <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
                         <span class="avatar-status badge-success"></span>
                     </div>
                 </div>
@@ -133,7 +92,7 @@
             <div class="message">
                 <div class="py-3 pb-5 mr-3 float-left">
                     <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
+                        <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
                         <span class="avatar-status badge-success"></span>
                     </div>
                 </div>
@@ -145,50 +104,7 @@
                 <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</small>
             </div>
             <hr>
-            <div class="message">
-                <div class="py-3 pb-5 mr-3 float-left">
-                    <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
-                        <span class="avatar-status badge-success"></span>
-                    </div>
-                </div>
-                <div>
-                    <small class="text-muted">Lukasz Holeczek</small>
-                    <small class="text-muted float-right mt-1">1:52 PM</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</small>
-            </div>
-            <hr>
-            <div class="message">
-                <div class="py-3 pb-5 mr-3 float-left">
-                    <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
-                        <span class="avatar-status badge-success"></span>
-                    </div>
-                </div>
-                <div>
-                    <small class="text-muted">Lukasz Holeczek</small>
-                    <small class="text-muted float-right mt-1">1:52 PM</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</small>
-            </div>
-            <hr>
-            <div class="message">
-                <div class="py-3 pb-5 mr-3 float-left">
-                    <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
-                        <span class="avatar-status badge-success"></span>
-                    </div>
-                </div>
-                <div>
-                    <small class="text-muted">Lukasz Holeczek</small>
-                    <small class="text-muted float-right mt-1">1:52 PM</small>
-                </div>
-                <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                <small class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</small>
-            </div>
+            
         </div>
         <div class="tab-pane p-3" id="settings" role="tabpanel">
             <h6>Settings</h6>

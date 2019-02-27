@@ -7,10 +7,25 @@
 
 // Bootstrap
 @import "node_modules/@coreui/coreui/scss/coreui";
+@import "node_modules/bootstrap-vue/src/index.scss";
 
 @import "node_modules/font-awesome/scss/font-awesome";
 @import "node_modules/simple-line-icons/scss/simple-line-icons";
 
+@import "node_modules/vue-snack/src/styles/styles";
+
 .hv100 {
     height: 100vh;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.mhidden{
+    display: none;
+}
+
+.mvisible{
+    display: block;
 }

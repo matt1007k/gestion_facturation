@@ -44,43 +44,10 @@
                 </a>
                 <a class="dropdown-item" href="#">
                     <i class="icon-speedometer text-warning"></i> Server overloaded
-                </a>
-                <div class="dropdown-header text-center">
-                    <strong>Server</strong>
-                </div>
-                <a class="dropdown-item" href="#">
-                    <div class="text-uppercase mb-1">
-                        <small>
-                        <b>CPU Usage</b>
-                        </small>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                    <small class="text-muted">348 Processes. 1/4 Cores.</small>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="text-uppercase mb-1">
-                        <small>
-                        <b>Memory Usage</b>
-                        </small>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                    <small class="text-muted">11444GB/16384MB</small>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="text-uppercase mb-1">
-                        <small>
-                        <b>SSD 1 Usage</b>
-                        </small>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                    <small class="text-muted">243GB/256GB</small>
-                </a>
+                </a>  
+                <a class="dropdown-item text-center" href="#">
+                    <strong>View all tasks</strong>
+                </a>                  
             </div>
         </li>
         <li class="nav-item dropdown d-md-down-none">
@@ -160,7 +127,7 @@
                     <div class="message">
                         <div class="py-3 mr-3 float-left">
                             <div class="avatar">
-                                <img class="img-avatar" src="img/avatars/7.jpg" alt="admin@bootstrapmaster.com">
+                                <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
                                 <span class="avatar-status badge-success"></span>
                             </div>
                         </div>
@@ -174,58 +141,7 @@
                         <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
                     </div>
                 </a>
-                <a class="dropdown-item" href="#">
-                    <div class="message">
-                        <div class="py-3 mr-3 float-left">
-                            <div class="avatar">
-                                <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
-                                <span class="avatar-status badge-warning"></span>
-                            </div>
-                        </div>
-                        <div>
-                            <small class="text-muted">John Doe</small>
-                            <small class="text-muted float-right mt-1">5 minutes ago</small>
-                        </div>
-                        <div class="text-truncate font-weight-bold">
-                            Lorem ipsum dolor sit amet
-                        </div>
-                        <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-                    </div>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="message">
-                        <div class="py-3 mr-3 float-left">
-                            <div class="avatar">
-                                <img class="img-avatar" src="img/avatars/5.jpg" alt="admin@bootstrapmaster.com">
-                                <span class="avatar-status badge-danger"></span>
-                            </div>
-                        </div>
-                        <div>
-                            <small class="text-muted">John Doe</small>
-                            <small class="text-muted float-right mt-1">1:52 PM</small>
-                        </div>
-                        <div class="text-truncate font-weight-bold">
-                            Lorem ipsum dolor sit amet
-                        </div>
-                        <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-                    </div>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="message">
-                        <div class="py-3 mr-3 float-left">
-                            <div class="avatar">
-                                <img class="img-avatar" src="img/avatars/4.jpg" alt="admin@bootstrapmaster.com">
-                                <span class="avatar-status badge-info"></span>
-                            </div>
-                        </div>
-                        <div>
-                            <small class="text-muted">John Doe</small>
-                            <small class="text-muted float-right mt-1">4:03 PM</small>
-                        </div>
-                        <div class="text-truncate font-weight-bold">Lorem ipsum dolor sit amet</div>
-                        <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
-                    </div>
-                </a>
+               
                 <a class="dropdown-item text-center" href="#">
                     <strong>View all messages</strong>
                 </a>
@@ -235,51 +151,32 @@
             <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <img class="img-avatar" src="{{ asset('img/avatars/user.jpg') }}" alt="admin@bootstrapmaster.com">
             </a>
-            <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-menu dropdown-menu-right">            
                 <div class="dropdown-header text-center">
-                <strong>Account</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-bell-o"></i> Updates
-                    <span class="badge badge-info">42</span>
+                    <strong>Settings</strong>
+                </div>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-user"></i> Profile</a>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-wrench"></i> Settings</a>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-usd"></i> Payments
+                    <span class="badge badge-dark">42</span>
                 </a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-envelope-o"></i> Messages
-                <span class="badge badge-success">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-tasks"></i> Tasks
-                <span class="badge badge-danger">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-comments"></i> Comments
-                <span class="badge badge-warning">42</span>
-            </a>
-            <div class="dropdown-header text-center">
-                <strong>Settings</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-user"></i> Profile</a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-wrench"></i> Settings</a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-usd"></i> Payments
-                <span class="badge badge-dark">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-file"></i> Projects
-                <span class="badge badge-primary">42</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-shield"></i> Lock Account</a>
-            <a class="dropdown-item" href="{{ route('logout') }}"
-            onclick="event.preventDefault();
-                          document.getElementById('logout-form').submit();">
-                <i class="fa fa-lock"></i> Cerrar sesion</a>   
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-file"></i> Projects
+                    <span class="badge badge-primary">42</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-shield"></i> Lock Account</a>
+                <a class="dropdown-item" href="{{ route('logout') }}"
+                onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
+                    <i class="fa fa-lock"></i> Cerrar sesion</a>   
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
             </div>
         </li>
     </ul>

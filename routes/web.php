@@ -17,14 +17,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware('auth')->group(function() {
+    Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('productos', 'Admin\ProductsController');
 
-    Route::get('/facturas', 'Admin\FacturationController@index')->name('facturas');
+    Route::resource('documentos', 'Admin\DocumentsController');
+    Route::get('/generar', 'Admin\DocumentsController@generar')->name('generar');
+    Route::post('/agregar-producto', 'Admin\DocumentsController@agregarProducto')->name('agregar.producto');
 });
 
-
-Route::get('/generar', 'Admin\FacturationController@generar')->name('generar');
-Route::post('/agregar-producto', 'Admin\FacturationController@agregarProducto')->name('agregar.producto');

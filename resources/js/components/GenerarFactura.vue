@@ -108,7 +108,9 @@
                                         </tr>
                                     </template>
                                     <template v-else>
-                                        <tr>No tienes productos agregados....!</tr>
+                                        <tr>
+                                            <td colspan="5">No tienes productos registrados....!</td>
+                                        </tr>
                                     </template>
                                 </tbody>
                             </table>
@@ -149,7 +151,14 @@
                             </div>
                         </div>
                     </div>
-                    <modal-product :products="products" @agregar="addProductToCart"></modal-product>
+                    <modal-product 
+                        :products="searchOnProducts" @agregar="addProductToCart"
+                        :pagination="pagination"  
+                        :pagesNumber="pagesNumber"
+                        :isActivedPage="isActivedPage"
+                        @nameModel="searchInput"
+                        @ChangePage="changePage"
+                        ></modal-product>
                 </form>
             </div>
         </div>
@@ -162,26 +171,41 @@ export default {
     components: {ModalProduct},
     name: "generar-factura",
     data(){
-        return {
-            products: [],
+        return {            
             tipos: [],
             observation: '',
             tipos_doc: [],
             tipo_doc: 'd',
             comprobante: [],    
             cart: [],
-            subtotal: 0      
+            subtotal: 0,
+            products: [],
+            name: '',
+            pagination: {
+                'total': 0,
+                'current_page': 0,
+                'per_page': 0,
+                'last_page': 0,
+                'from': 0,
+                'to': 0
+            },
+            offset: 3     
         }
     },
     methods: {
-        getProducts(){
-            axios.get('/api/getProducts')
+        getProducts(page){
+            axios.get(`/api/getProducts?page=${page}`)
                 .then(res => {
-                    this.products = res.data.products;
+                    this.products = res.data.products.data;
                     this.tipos = res.data.tipos;
                     this.tipos_doc = res.data.tipos_doc;
+                    this.pagination = res.data.pagination;
                 })
                 .catch(error => console.log(error))
+        },
+        changePage(page){
+            this.pagination.current_page = page;
+            this.getProducts(page);
         },
         generarDoc(){
             console.log(this.tipo_doc);
@@ -218,6 +242,10 @@ export default {
             updatedCart[updatedItemIndex] = updatedItem;
             this.cart  = updatedCart;
         },
+        searchInput(event){
+            const name = event.target.value;
+            this.name = name;
+        },
         removeProductoFromCart(product){
             const updatedCart = [...this.cart];
             const updatedItemIndex = updatedCart.findIndex(
@@ -243,18 +271,53 @@ export default {
             }).reduce(function(a, b) {
                 return a + b
             }, 0)
-            return subTotal;
+            return parseFloat(subTotal).toFixed(2);
         },
         igvSubTotal(){
-            return this.subTotal() * 0.18;
+            return parseFloat(this.subTotal() * 0.18).toFixed(2);
         },
         Total(){
-            return this.subTotal() + (this.subTotal() * 0.18);
+            return parseFloat(this.subTotal() + (this.subTotal() * 0.18)).toFixed(2);
         }
     
     },
     created() {
         this.getProducts();
+    },
+    computed: {
+        searchOnProducts(){
+            return this.products.filter((item) => {
+                return item.name.toLowerCase().includes(this.name.toLowerCase())
+            });
+        },
+        isActivedPage(){
+            return this.pagination.current_page;
+        },
+        pagesNumber(){
+            if(!this.pagination.to){
+                return [];
+            }
+
+            let from = this.pagination.current_page - this.offset;
+
+            if (from < 1) {
+                from = 1;
+            }            
+
+            let to = from + (this.offset * 2);
+
+            if (to >= this.pagination.last_page) {
+                to = this.pagination.last_page;
+            }
+            
+            let pagesArray = [];
+            while(from <= to){
+                pagesArray.push(from);
+                from++;
+            }
+
+            return pagesArray;
+        }
     }
 }
 </script>
