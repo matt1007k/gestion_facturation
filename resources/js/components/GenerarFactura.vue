@@ -7,7 +7,7 @@
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="fecha">Tipo de comprobante</label>
-                            <select name="tipo" id="tipo" class="form-control">
+                            <select v-model="tipo" id="tipo" class="form-control">
                                 <option
                                 v-for="(tipo, index) in tipos"
                                 :key="index"
@@ -19,15 +19,15 @@
                     <div class="row mb-3">                           
                         <div class="col-md-3">
                             <label for="fecha">Fecha de Emision</label>
-                            <input type="date" name="fecha" id="fecha" class="form-control">
+                            <input type="date" v-model="fecha_emision" id="fecha" class="form-control">
                         </div>
                         <div class="col-md-3">
                             <label for="codigo">Serie de Emision</label>
-                            <input type="text" class="form-control" name="codigo" id="codigo" placeholder="Ingrese la serie del comprobante">
+                            <input type="text" class="form-control" v-model="num_serie" id="codigo" placeholder="Ingrese la serie del comprobante">
                         </div>
                         <div class="col-md-3">
                             <label for="tipo">Numero de Emision</label>
-                            <input type="text" class="form-control" name="num" id="num" placeholder="Ingrese el numero del comprobante">
+                            <input type="text" class="form-control" v-model="num_emision" id="num" placeholder="Ingrese el numero del comprobante">
                         </div>
                         <div class="col-md-3">
                             <label for="tipo">Tipo de Moneda</label>
@@ -39,7 +39,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="tipo">Tipo de documento</label>
-                                <select name="tipo" id="tipo" class="form-control">
+                                <select v-model="tipo_doc" id="tipo" class="form-control">
                                 <option v-for="tipo in tipos_doc"
                                         :key="tipo">{{tipo}}</option>
                                 </select>
@@ -47,15 +47,15 @@
                         </div>
                         <div class="col-md-3">
                             <label for="num_doc">Numero de documento</label>
-                            <input type="text" class="form-control" name="num_doc" id="num_doc" placeholder="Ingrese numero del documento">
+                            <input type="text" class="form-control" v-model="num_doc" id="num_doc" placeholder="Ingrese numero del documento">
                         </div>
                         <div class="col-md-6">
                             <label for="nombre">Apellidos y nombres o razon social</label>
-                            <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Ingrese los datos o razon del cliente">
+                            <input type="text" class="form-control" v-model="nombre" id="nombre" placeholder="Ingrese los datos o razon del cliente">
                         </div>
                         <div class="col-md-6">
                             <label for="direccion">Direccion del cliente</label>
-                            <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Ingrese la direccion del cliente">
+                            <input type="text" class="form-control" v-model="direccion" id="direccion" placeholder="Ingrese la direccion del cliente">
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -118,10 +118,6 @@
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="direccion">Observacion: </label>
-                                <textarea v-model="observation" class="form-control" cols="30" rows="5" placeholder="Escribe aqui una observacion..."></textarea>                             
-                            </div>
                         </div>
                         <div class="col-md-6">
                             <h5>Resumen</h5>
@@ -139,7 +135,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12 d-flex justify-content-between">
-                                    <label for="total" class="font-weight-bold">Total </label>
+                                    <label for="total" class="font-weight-bold">Total a pagar</label>
                                     <label class="font-weight-bold text-primary">s/. {{Total()}}</label>
                                 </div>
                             </div>
@@ -174,9 +170,7 @@ export default {
         return {            
             tipos: [],
             observation: '',
-            tipos_doc: [],
-            tipo_doc: 'd',
-            comprobante: [],    
+            tipos_doc: [],   
             cart: [],
             subtotal: 0,
             products: [],
@@ -189,7 +183,15 @@ export default {
                 'from': 0,
                 'to': 0
             },
-            offset: 3     
+            offset: 3,  
+            tipo: '', 
+            tipo_doc: '',         
+            fecha_emision: '',
+            num_serie: '',
+            num_emision: '',
+            num_doc: '',
+            nombre: '',
+            direccion: ''    
         }
     },
     methods: {
@@ -207,8 +209,29 @@ export default {
             this.pagination.current_page = page;
             this.getProducts(page);
         },
-        generarDoc(){
-            console.log(this.tipo_doc);
+        async generarDoc(){
+            const data = {
+                tipo: this.tipo, 
+                tipo_doc: this.tipo_doc,         
+                fecha_emision: this.fecha_emision,
+                num_serie: this.num_serie,
+                num_emision: this.num_emision,
+                num_doc: this.num_doc,
+                nombre: this.nombre,
+                direccion: this.direccion,
+                details: this.cart,
+                subtotal:  this.subTotal(),
+                igv: this.igvSubTotal(),
+                total: this.Total()
+            }
+            let result = axios.post('/generar', data);
+            if(result){
+                console.log(result);
+                
+            }else{
+                console.log(result);
+            }
+
         },
         addProductToCart(product){
             const updatedCart = [...this.cart];

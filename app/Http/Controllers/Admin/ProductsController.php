@@ -12,7 +12,9 @@ class ProductsController extends Controller
     public function getProducts(Request $request){
         $products = Product::orderBy('name', 'asc')->paginate(6);
 
-        $tipos = ['Factura', 'Boleta de Venta', 'Nota de Credito', 'Nota de Debito'];
+        $tipos = ['Factura', 'Boleta de Venta', 
+            #'Nota de Credito', 'Nota de Debito'
+        ];
         $tipos_doc = ['DNI', 'RUC'];
 
         $pagination = [

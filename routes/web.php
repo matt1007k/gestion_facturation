@@ -18,12 +18,16 @@ Route::get('/', function () {
 Auth::routes();
 
 
+
 Route::middleware('auth')->group(function() {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::resource('productos', 'Admin\ProductsController');
 
-    Route::resource('documentos', 'Admin\DocumentsController');
-    Route::get('/generar', 'Admin\DocumentsController@generar')->name('generar');
-    Route::post('/agregar-producto', 'Admin\DocumentsController@agregarProducto')->name('agregar.producto');
+    Route::resource('documentos', 'Admin\VentasController');
+    Route::post('/generar', 'Admin\VentasController@generar')->name('generar');   
+
+
+    Route::get('/facturas', 'Admin\VentasController@pdf')->name('pdf');
+    Route::get('/boletas', 'Admin\VentasController@pdf')->name('pdf');
 });
 
