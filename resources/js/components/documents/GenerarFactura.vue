@@ -7,27 +7,41 @@
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <label for="fecha">Tipo de comprobante</label>
-                            <select v-model="tipo" id="tipo" class="form-control">
+                            <select v-model="tipo" id="tipo" class="form-control" :class="{'is-invalid': errors.tipo}">
+                                <option value="" disabled hidden>----- Seleccionar -----</option>
                                 <option
-                                v-for="(tipo, index) in tipos"
+                                v-for="(tipo_com, index) in tipos"
                                 :key="index"
-                                >{{tipo}}</option>                               
+                                :value="tipo_com[0]"
+                                >{{tipo_com[1]}}</option>                               
                             </select>
+                            <div class="invalid-feedback" v-if="errors.tipo">
+                                {{errors.tipo[0]}}
+                            </div>
                         </div>
                     </div>  
                     <h4>Comprobante</h4>                  
                     <div class="row mb-3">                           
                         <div class="col-md-3">
-                            <label for="fecha">Fecha de Emision</label>
-                            <input type="date" v-model="fecha_emision" id="fecha" class="form-control">
+                            <label for="fecha">Fecha de Emisión</label>
+                            <input type="date" v-model="fecha_emision" id="fecha" class="form-control" :class="{'is-invalid': errors.fecha_emision}">
+                            <div class="invalid-feedback" v-if="errors.fecha_emision">
+                                {{errors.fecha_emision[0]}}
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <label for="codigo">Serie de Emision</label>
-                            <input type="text" class="form-control" v-model="num_serie" id="codigo" placeholder="Ingrese la serie del comprobante">
+                            <input type="text" class="form-control" :class="{'is-invalid': errors.num_serie}" v-model="num_serie" id="codigo" placeholder="Ingrese la serie del comprobante">
+                            <div class="invalid-feedback" v-if="errors.num_serie">
+                                {{errors.num_serie[0]}}
+                            </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="tipo">Numero de Emision</label>
-                            <input type="text" class="form-control" v-model="num_emision" id="num" placeholder="Ingrese el numero del comprobante">
+                            <label for="tipo">Número de Emision</label>
+                            <input type="text" class="form-control" :class="{'is-invalid': errors.num_emision}" v-model="num_emision" id="num" placeholder="Ingrese el número del comprobante">
+                            <div class="invalid-feedback" v-if="errors.num_emision">
+                                {{errors.num_emision[0]}}
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <label for="tipo">Tipo de Moneda</label>
@@ -39,19 +53,29 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="tipo">Tipo de documento</label>
-                                <select v-model="tipo_doc" id="tipo" class="form-control">
-                                <option v-for="tipo in tipos_doc"
+                                <select v-model="tipo_doc" id="tipo" class="form-control" :class="{'is-invalid': errors.tipo_doc}">
+                                    <option value="" disabled hidden>----- Seleccionar -----</option>
+                                    <option v-for="tipo in tipos_doc"
                                         :key="tipo">{{tipo}}</option>
                                 </select>
+                                <div class="invalid-feedback" v-if="errors.tipo_doc">
+                                    {{errors.tipo_doc[0]}}
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <label for="num_doc">Numero de documento</label>
-                            <input type="text" class="form-control" v-model="num_doc" id="num_doc" placeholder="Ingrese numero del documento">
+                            <label for="num_doc">Número de documento</label>
+                            <input type="text" class="form-control" :class="{'is-invalid': errors.num_doc}" v-model="num_doc" id="num_doc" placeholder="Ingrese número del documento">
+                            <div class="invalid-feedback" v-if="errors.num_doc">
+                                {{errors.num_doc[0]}}
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="nombre">Apellidos y nombres o razon social</label>
-                            <input type="text" class="form-control" v-model="nombre" id="nombre" placeholder="Ingrese los datos o razon del cliente">
+                            <input type="text" class="form-control" :class="{'is-invalid': errors.nombre}" v-model="nombre" id="nombre" placeholder="Ingrese los datos o razon del cliente">
+                            <div class="invalid-feedback" v-if="errors.nombre">
+                                {{errors.nombre[0]}}
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <label for="direccion">Direccion del cliente</label>
@@ -69,6 +93,7 @@
                         <div class="col-md-12">
                             <table class="table table-hover table-responsive">
                                 <thead>
+                                    <th class="text-center">#</th>
                                     <th class="text-center">Codigo</th>                                   
                                     <th class="text-center">Descripcion</th>
                                     <th class="text-center">Precio</th>
@@ -80,8 +105,9 @@
                                 </thead>
                                 <tbody>
                                     <template v-if="cart.length > 0">
-                                        <tr v-for="item in cart" 
+                                        <tr v-for="(item, index) in cart" 
                                             :key="item.id">
+                                            <td>{{index + 1}}</td>  
                                             <td>{{item.code}}</td>                                       
                                             <td class="w-50">{{item.description}}</td>
                                             <td class="text-right">{{item.price}}</td>
@@ -114,6 +140,9 @@
                                     </template>
                                 </tbody>
                             </table>
+                            <div class="alert alert-danger" v-if="errors.details || !cart">
+                                Los productos son necesarios para un venta.
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-3">
@@ -141,7 +170,7 @@
                             </div>
                             <div class="row row mt-3">
                                 <div class="col-md-12 d-flex justify-content-between">
-                                    <input type="button" class="btn btn-danger" value="Cancelar"> 
+                                    <input type="button" class="btn btn-danger" value="Cancelar" @click="resetField()"> 
                                     <input type="submit" class="btn btn-primary" value="Generar documento">                           
                                 </div>
                             </div>
@@ -155,6 +184,7 @@
                         @nameModel="searchInput"
                         @ChangePage="changePage"
                         ></modal-product>
+                    <modal-comprobante></modal-comprobante>
                 </form>
             </div>
         </div>
@@ -163,8 +193,9 @@
 
 <script>
 import ModalProduct from './ModalProduct.vue'
+import ModalComprobante from './ModalComprobante.vue'
 export default {
-    components: {ModalProduct},
+    components: {ModalProduct, ModalComprobante},
     name: "generar-factura",
     data(){
         return {            
@@ -172,7 +203,6 @@ export default {
             observation: '',
             tipos_doc: [],   
             cart: [],
-            subtotal: 0,
             products: [],
             name: '',
             pagination: {
@@ -191,7 +221,8 @@ export default {
             num_emision: '',
             num_doc: '',
             nombre: '',
-            direccion: ''    
+            direccion: '',
+            errors: {}   
         }
     },
     methods: {
@@ -209,9 +240,9 @@ export default {
             this.pagination.current_page = page;
             this.getProducts(page);
         },
-        async generarDoc(){
+        generarDoc(){
             const data = {
-                tipo: this.tipo, 
+                tipo: this.$data.tipo, 
                 tipo_doc: this.tipo_doc,         
                 fecha_emision: this.fecha_emision,
                 num_serie: this.num_serie,
@@ -224,13 +255,12 @@ export default {
                 igv: this.igvSubTotal(),
                 total: this.Total()
             }
-            let result = axios.post('/generar', data);
-            if(result){
+            axios.post('/generar', data)
+            .then(result => {
                 console.log(result);
-                
-            }else{
-                console.log(result);
-            }
+                this.$children[1].url = result.data;
+                this.$root.$emit('bv::show::modal','modalComprobante');
+            }).catch(error => this.errors = error.response.data.errors);
 
         },
         addProductToCart(product){
@@ -298,9 +328,22 @@ export default {
         },
         igvSubTotal(){
             return parseFloat(this.subTotal() * 0.18).toFixed(2);
-        },
+        },        
         Total(){
-            return parseFloat(this.subTotal() + (this.subTotal() * 0.18)).toFixed(2);
+
+            let total = (Number(this.subTotal()) + Number(this.igvSubTotal())) ;
+            return parseFloat(total).toFixed(2);
+        },
+        resetField(){
+            this.tipo = ''; 
+            this.tipo_doc = '';         
+            this.fecha_emision = '';
+            this.num_serie = '';
+            this.num_emision = '';
+            this.num_doc = '';
+            this.nombre = '';
+            this.direccion = '';
+            this.cart = [];
         }
     
     },

@@ -102,8 +102,8 @@
                       
                     </td>
                     <td class="right text-center">
-                        <h3 class="no-margin title">FACTURA ELECTRÓNICA</h3>
-                        <p class="no-margin number">F001-00000001</p>
+                        <h3 class="no-margin title"> {{$tipo}} </h3>
+                        <p class="no-margin number">{{$comprobante['num_comprobante']}}</p>
                     </td>
                 </tr>
             </tbody>
@@ -114,26 +114,26 @@
             <tbody>
                 <tr>
                     <td>Cliente: </td>
-                    <td>{{ $comprobante['cliente'] }}</td>
+                    <td>{{ $comprobante['nombre'] }}</td>
                     <td>Fecha de emisión: </td>
-                    <td>2019-02-27</td>
+                    <td>{{$comprobante['fecha_emision']}}</td>
                 </tr>
                 <tr>
                     <td>RUC: </td>
-                    <td>10704116361</td>
+                    <td>{{$comprobante['num_doc']}}</td>
                     <td>Fecha de vencimiento: </td>
-                    <td>2019-02-27</td>
+                    <td>{{$comprobante['fecha_emision']}}</td>
                 </tr>
                 <tr>
                     <td>Dirección: </td>
-                    <td>Jr. Ayacucho #234</td>
+                    <td>{{$comprobante['direccion']}}</td>
                 </tr>
-                <tr style="margin-top: 10px;padding: 15px 0;">
+                {{-- <tr style="margin-top: 10px;padding: 15px 0;">
                     <td>Orden de Compra:  </td>
                     <td>12</td>
                     <td></td>
                     <td></td>
-                </tr>
+                </tr> --}}
             </tbody>
         </table>
     </div>
@@ -153,42 +153,30 @@
             
             @foreach ($comprobante['details'] as $detail)
                 <tr class="details">
-                    <td class="text-center">2</td>                                   
-                    <td class="text-left">{{$detail['description']}}</td>
-                    <td class="text-right">{{$detail['price']}} </td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">40</td>
-                    <td class="text-right">14</td>
-                    <td class="text-right">54</td>
+                    <td class="text-center">{{$detail['cantidad']}}</td>                                   
+                    <td class="text-left">{{$detail['descripcion']}}</td>
+                    <td class="text-right">{{$detail['precio']}} </td>
+                    <td class="text-right">{{$detail['descuento']}}</td>
+                    <td class="text-right">{{$detail['subtotal']}}</td>
+                    <td class="text-right">{{$detail['subtotal'] * 0.18}}</td>
+                    <td class="text-right">{{$detail['subtotal'] + ($detail['subtotal'] * 0.18)}}</td>
                 </tr>
             @endforeach          
-            <tr class="details">
-                <td class="text-center">2</td>                                   
-                <td class="text-left">Descripción 1 sa das das d</td>
-                <td class="text-right">20</td>
-                <td class="text-right">0</td>
-                <td class="text-right">40</td>
-                <td class="text-right">14</td>
-                <td class="text-right">54</td>
-            </tr>
-            <tr class="details">
-                <td class="text-center">1</td>                                   
-                <td class="text-left">Descripción 2 asdas das das</td>
-                <td class="text-right">15</td>
-                <td class="text-right">0</td>
-                <td class="text-right">15</td>
-                <td class="text-right">3</td>
-                <td class="text-right">18</th>
-            </tr>
+            
+            <tr class="text-bold">
+                    <td colspan="4"></td>                                   
+                    <td colspan="2" class="text-right">Subtotal: S/</td>
+                    <td class="text-right">{{$comprobante['subtotal']}}</td>
+                </tr>
             <tr class="text-bold">
                 <td colspan="4"></td>                                   
                 <td colspan="2" class="text-right">IGV: S/</td>
-                <td class="text-right">15</td>
+                <td class="text-right">{{$comprobante['igv']}}</td>
             </tr>
             <tr class="text-bold">
                 <td colspan="4"></td>                                   
                 <td colspan="2" class="text-right">TOTAL A PAGAR: S/</td>
-                <td class="text-right">15</td>
+                <td class="text-right">{{$comprobante['total']}}</td>
             </tr>
         </tbody>
     </table>

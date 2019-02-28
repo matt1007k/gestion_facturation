@@ -11,10 +11,10 @@
     </button>
     <ul class="nav navbar-nav d-md-down-none">
         <li class="nav-item px-3">
-            <a class="nav-link" href="#">Dashboard</a>
+            <a class="nav-link" href="{{ route('home') }}">Dashboard</a>
         </li>
         <li class="nav-item px-3">
-            <a class="nav-link" href="#">Users</a>
+            <a class="nav-link" href="{{ route('productos.index') }}">Productos</a>
         </li>
         <li class="nav-item px-3">
             <a class="nav-link" href="#">Settings</a>
@@ -24,11 +24,11 @@
         <li class="nav-item dropdown d-md-down-none">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="icon-bell"></i>
-                <span class="badge badge-pill badge-danger">5</span>
+                <span class="badge badge-pill badge-danger">0</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
                 <div class="dropdown-header text-center">
-                    <strong>You have 5 notifications</strong>
+                    <strong>You have 0 notifications</strong>
                 </div>
                 <a class="dropdown-item" href="#">
                     <i class="icon-user-follow text-success"></i> New user registered
@@ -53,11 +53,11 @@
         <li class="nav-item dropdown d-md-down-none">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="icon-list"></i>
-                <span class="badge badge-pill badge-warning">15</span>
+                <span class="badge badge-pill badge-warning">0</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
                 <div class="dropdown-header text-center">
-                    <strong>You have 5 pending tasks</strong>
+                    <strong>You have 0 pending tasks</strong>
                 </div>
                 <a class="dropdown-item" href="#">
                     <div class="small mb-1">Upgrade NPM &amp; Bower
@@ -117,11 +117,11 @@
         <li class="nav-item dropdown d-md-down-none">
             <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="icon-envelope-letter"></i>
-                <span class="badge badge-pill badge-info">7</span>
+                <span class="badge badge-pill badge-info">0</span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg">
                 <div class="dropdown-header text-center">
-                    <strong>You have 4 messages</strong>
+                    <strong>You have 0 messages</strong>
                 </div>
                 <a class="dropdown-item" href="#">
                     <div class="message">

@@ -22,7 +22,7 @@
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">
-         
+        <documents-list></documents-list>   
     </div>
 </div>
 @endsection

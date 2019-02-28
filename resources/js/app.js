@@ -33,7 +33,8 @@ Vue.use(VueSnackbar, {
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('generar-factura', require('./components/GenerarFactura.vue').default);
+Vue.component('generar-factura', require('./components/documents/GenerarFactura.vue').default);
+Vue.component('documents-list', require('./components/documents/DocumentsList.vue').default);
 Vue.component('productos', require('./components/product/ProductsList.vue').default);
 Vue.component('form-login', require('./components/auth/FormLogin.vue').default);
 

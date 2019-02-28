@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/getProducts', 'Admin\ProductsController@getProducts')->name('getProducts');
+Route::get('/getSales', 'Admin\VentasController@getSales')->name('getSales');

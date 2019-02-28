@@ -17,15 +17,15 @@ class CreateVentasTable extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('tipo', 100);
-            $table->string('num_comprobante', 20);            
-            $table->timestamp('fecha_emision');
+            $table->string('num_comprobante', 20)->unique();            
+            $table->date('fecha_emision');
             $table->string('tipo_doc', 100);
             $table->string('num_doc', 12);
             $table->string('nombre', 200);
             $table->string('direccion', 200);
-            $table->decimal('subtotal', 2);
-            $table->decimal('igv', 2);
-            $table->decimal('total', 2);
+            $table->decimal('subtotal', 8, 2);
+            $table->decimal('igv', 8, 2);
+            $table->decimal('total', 8, 2);
             $table->timestamps();
         });
     }

@@ -27,7 +27,8 @@ Route::middleware('auth')->group(function() {
     Route::post('/generar', 'Admin\VentasController@generar')->name('generar');   
 
 
-    Route::get('/facturas', 'Admin\VentasController@pdf')->name('pdf');
-    Route::get('/boletas', 'Admin\VentasController@pdf')->name('pdf');
+    Route::get('/comprobante/{num_comprobante}', 'Admin\VentasController@pdf')->name('pdf');
+    Route::get('/descargar/{num_comprobante}', 'Admin\VentasController@descargar')->name('descargar');
+    // Route::get('/boletas/{num_comprobante}', 'Admin\VentasController@pdf')->name('boletas');
 });
 
