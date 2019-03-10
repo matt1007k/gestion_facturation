@@ -3,16 +3,12 @@
     <div class="card-header">
       <div class="row">
         <div class="col-md-6">
-          <h4>Listado de productos</h4>
+          <h4>Listado de Clientes</h4>
         </div>
         <div class="col-md-6 d-flex justify-content-end">
-          <!-- <button class="btn btn-success" data-toggle="modal" data-target="#addProduct">
-                        <i class="icon-plus icons"></i>
-                        Nuevo producto
-          </button>-->
-          <b-button v-b-modal.modalPrevent variant="success" @click="codeProductAdd">
+          <b-button v-b-modal.modalClientCreate variant="success">
             <i class="icon-plus icons"></i>
-            Nuevo producto
+            Nuevo Cliente
           </b-button>
         </div>
       </div>
@@ -21,41 +17,37 @@
       <div class="row mb-3">
         <div class="col-md-8">Ver: {{pagination.total}} en total</div>
         <div class="col-md justify-content-end">
-          <input type="text" class="form-control" v-model="name" placeholder="Buscar producto...!">
+          <input
+            type="text"
+            class="form-control"
+            v-model="name"
+            placeholder="Buscar un cliente...!"
+          >
         </div>
       </div>
       <table class="table table-hover table-responsive">
         <thead>
-          <th>Codigo</th>
+          <th>#</th>
           <th>Nombre</th>
-          <th>Descripcion</th>
-          <th>Precio</th>
-          <th>Estado</th>
-          <th>Cantidad</th>
+          <th>Tipo Doc.</th>
+          <th>Num. Doc.</th>
+          <th>Direccion</th>
           <th>Acciones</th>
         </thead>
         <tbody>
-          <template v-if="searchOnProducts.length > 0">
-            <tr v-for="product in searchOnProducts" :key="product.id">
-              <td>{{product.code}}</td>
-              <td>{{product.name}}</td>
-              <td>{{product.description}}</td>
-              <td>{{product.price}}</td>
-              <td>
-                <template v-if="product.status === 'available'">
-                  <span class="badge badge-success">Disponible</span>
-                </template>
-                <template v-else>
-                  <span class="badge badge-danger">Agotado</span>
-                </template>
-              </td>
-              <td class="text-center">{{product.quantity}}</td>
+          <template v-if="searchOnClients.length > 0">
+            <tr v-for="(client, index) in searchOnClients" :key="client.id">
+              <td>{{index + 1}}</td>
+              <td>{{client.nombre}}</td>
+              <td>{{client.tipo_doc}}</td>
+              <td>{{client.num_doc}}</td>
+              <td>{{client.direccion}}</td>
               <td>
                 <b-button
                   variant="primary"
                   size="sm"
-                  v-b-modal.modalEditProduct
-                  @click="editarProduct(product)"
+                  v-b-modal.modalEditClient
+                  @click="editarClient(client)"
                 >
                   <i class="fa fa-edit"></i>
                   <span>Editar</span>
@@ -63,7 +55,7 @@
                 <button
                   type="button"
                   class="btn btn-danger btn-sm"
-                  @click="eliminarProduct(product.id)"
+                  @click="eliminarClient(client.id)"
                 >
                   <i class="fa fa-remove"></i>
                   <span>Eliminar</span>
@@ -72,7 +64,7 @@
             </tr>
           </template>
           <template v-else>
-            <tr>No tienes productos registrados....!</tr>
+            <tr>No tienes clientes registrados....!</tr>
           </template>
         </tbody>
       </table>
@@ -105,23 +97,23 @@
           </ul>
         </nav>
       </div>
-      <modal-product-create :getProducts="getProducts"></modal-product-create>
+      <modal-client-create :getClients="getClients"></modal-client-create>
 
-      <modal-product-edit :getProducts="getProducts"></modal-product-edit>
+      <modal-client-edit :getClients="getClients"></modal-client-edit>
     </div>
   </div>
 </template>
 
 <script>
 import swal from "sweetalert";
-import ModalProductCreate from "./ModalProductCreate.vue";
-import ModalProductEdit from "./ModalProductEdit.vue";
+import ModalClientCreate from "./ModalClientCreate.vue";
+import ModalClientEdit from "./ModalClientEdit.vue";
 export default {
-  components: { ModalProductCreate, ModalProductEdit },
+  components: { ModalClientCreate, ModalClientEdit },
   data() {
     return {
       name: "",
-      products: [],
+      clients: [],
       id: 0,
       pagination: {
         total: 0,
@@ -135,11 +127,11 @@ export default {
     };
   },
   methods: {
-    async getProducts(page) {
-      let result = await axios.get(`/api/getProducts?page=${page}`);
+    async getClients(page) {
+      let result = await axios.get(`/api/getClients?page=${page}`);
       if (result) {
         console.log(result);
-        this.products = result.data.products.data;
+        this.clients = result.data.clients.data;
         this.pagination = result.data.pagination;
       } else {
         console.log("error");
@@ -147,24 +139,9 @@ export default {
     },
     changePage(page) {
       this.pagination.current_page = page;
-      this.getProducts(page);
+      this.getClients(page);
     },
-    codeProductAdd() {
-      this.$children[0].code = `P0000${this.products.length + 1}`;
-    },
-    editarProduct(product) {
-      // pasamos datos al componente hijo [0 , 1]
-      // ModalProductCreate [0]
-      // ModalProductEdit [1]
-      this.$children[1].id = product.id;
-      this.$children[1].code = product.code;
-      this.$children[1].name = product.name;
-      this.$children[1].description = product.description;
-      this.$children[1].price = product.price;
-      this.$children[1].quantity = product.quantity;
-      this.$children[1].status = product.status;
-    },
-    eliminarProduct(id) {
+    eliminarClient(id) {
       swal({
         title: "Estas seguro de eliminar?",
         text: "Esta operacion ya no se puede revertir",
@@ -174,28 +151,41 @@ export default {
       }).then(willDelete => {
         if (willDelete) {
           axios
-            .delete(`/api/productos/${id}`)
+            .delete(`/api/clientes/${id}`)
             .then(result => {
               swal("El registro se elimino con exito", {
                 icon: "success"
               });
             })
             .catch(error => console.log(error));
-          this.getProducts();
+          this.getClients();
         } else {
         }
       });
+    },
+    cleanFormAdd() {
+      // this.$children[0].nombre = null;
+    },
+    editarClient(client) {
+      // pasamos datos al componente hijo [0 , 1]
+      // ModalClientCreate [0]
+      // ModalClientEdit [1]
+      this.$children[1].id = client.id;
+      this.$children[1].nombre = client.nombre;
+      this.$children[1].tipo_doc = client.tipo_doc;
+      this.$children[1].num_doc = client.num_doc;
+      this.$children[1].direccion = client.direccion;
     }
   },
   created() {
-    this.getProducts();
+    this.getClients();
   },
   computed: {
-    searchOnProducts() {
-      return this.products.filter(item => {
+    searchOnClients() {
+      return this.clients.filter(item => {
         return (
-          item.name.toLowerCase().includes(this.name.toLowerCase()) ||
-          item.description.toLowerCase().includes(this.name.toLowerCase())
+          item.nombre.toLowerCase().includes(this.name.toLowerCase()) ||
+          item.num_doc.toLowerCase().includes(this.name.toLowerCase())
         );
       });
     },

@@ -21,14 +21,23 @@ Auth::routes();
 
 Route::middleware('auth')->group(function() {
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::resource('productos', 'Admin\ProductsController');
 
-    Route::resource('documentos', 'Admin\VentasController');
+    Route::get('/productos', 'Admin\ProductsController@index')->name('productos.index');   
+    // Route::resource('productos', 'Admin\ProductsController');    
+
+    Route::get('/documentos', 'Admin\VentasController@index')->name('documentos.index');
+    Route::get('/documentos/create', 'Admin\VentasController@create')->name('documentos.create');
+
+
+    Route::get('/clientes', 'Admin\ClientsController@index')->name('clientes.index');
+
+
     Route::post('/generar', 'Admin\VentasController@generar')->name('generar');   
-
 
     Route::get('/comprobante/{num_comprobante}', 'Admin\VentasController@pdf')->name('pdf');
     Route::get('/descargar/{num_comprobante}', 'Admin\VentasController@descargar')->name('descargar');
     // Route::get('/boletas/{num_comprobante}', 'Admin\VentasController@pdf')->name('boletas');
+
+    Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
 });
 

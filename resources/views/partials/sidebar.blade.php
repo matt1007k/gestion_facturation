@@ -21,6 +21,10 @@
                         <i class="nav-icon icon-list"></i> Comprobantes</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('clientes.index') }}">
+                        <i class="nav-icon icon-people"></i> Clientes</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('productos.index') }}">
                         <i class="nav-icon icon-handbag"></i> Productos</a>
                     </li>
