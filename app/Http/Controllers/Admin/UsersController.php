@@ -14,9 +14,9 @@ class UsersController extends Controller
     }
     public function getUserAuth(){
         $id = Auth::check() ? Auth::user()->id : null;
-        $user = Auth::user();
+        $user = auth()->user();
         return response()->json([
-            'user' => $user
+            'user' => $id 
         ], 200);
     }
 }

@@ -1845,6 +1845,61 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1906,22 +1961,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "formProfile",
   components: {
     EditarProfile: _EditarProfile_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: {
-    auth: {
-      type: Object,
-      default: {}
+  data: function data() {
+    return {
+      user: {}
+    };
+  },
+  methods: {
+    perfil: function perfil() {
+      this.$children[0].user = this.user;
     }
   },
-  data: function data() {
-    return {};
-  },
-  methods: {}
+  created: function created() {
+    this.user = window.Auth;
+  }
 });
 
 /***/ }),
@@ -61093,16 +61193,180 @@ var render = function() {
     [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-md-6" }, [
-          _c("h5", [_vm._v("Cambiar logo de la empresa")]),
+          _c("h5", [_vm._v("Cambiar datos de la empresa")]),
           _vm._v(" "),
-          _c("form", {
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.handleSubmit()
+          _c(
+            "form",
+            {
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                  return _vm.handleSubmit()
+                }
               }
-            }
-          })
+            },
+            [
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    id: "name",
+                    label: "Nombre de empresa:",
+                    "label-for": "name"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "name",
+                      type: "text",
+                      required: "",
+                      placeholder: "ejem: EMPRESA S.A"
+                    },
+                    model: {
+                      value: _vm.user.name,
+                      callback: function($$v) {
+                        _vm.$set(_vm.user, "name", $$v)
+                      },
+                      expression: "user.name"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    id: "email",
+                    label: "Correo electrónico:",
+                    "label-for": "email"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "email",
+                      type: "email",
+                      required: "",
+                      placeholder: "ejem: user112@mail.com"
+                    },
+                    model: {
+                      value: _vm.user.email,
+                      callback: function($$v) {
+                        _vm.$set(_vm.user, "email", $$v)
+                      },
+                      expression: "user.email"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                { attrs: { id: "ruc", label: "RUC:", "label-for": "ruc" } },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "ruc",
+                      type: "text",
+                      required: "",
+                      placeholder: "Ingrese el ruc de tu empresa"
+                    },
+                    model: {
+                      value: _vm.user.ruc,
+                      callback: function($$v) {
+                        _vm.$set(_vm.user, "ruc", $$v)
+                      },
+                      expression: "user.ruc"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    id: "telefono",
+                    label: "N. Teléfono / Celular:",
+                    "label-for": "telefono"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "telefono",
+                      type: "text",
+                      required: "",
+                      placeholder: "Ingrese el teléfono de tu empresa"
+                    },
+                    model: {
+                      value: _vm.user.telefono,
+                      callback: function($$v) {
+                        _vm.$set(_vm.user, "telefono", $$v)
+                      },
+                      expression: "user.telefono"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "b-form-group",
+                {
+                  attrs: {
+                    id: "direccion",
+                    label: "Dirección:",
+                    "label-for": "direccion"
+                  }
+                },
+                [
+                  _c("b-form-input", {
+                    attrs: {
+                      id: "direccion",
+                      type: "text",
+                      required: "",
+                      placeholder: "Ingrese el dirección de tu empresa"
+                    },
+                    model: {
+                      value: _vm.user.direccion,
+                      callback: function($$v) {
+                        _vm.$set(_vm.user, "direccion", $$v)
+                      },
+                      expression: "user.direccion"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "form-group d-flex justify-content-between align-items-center"
+                },
+                [
+                  _c("b-button", { on: { click: _vm.hideModal } }, [
+                    _vm._v("Cancelar")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "b-button",
+                    { attrs: { type: "submit", variant: "success" } },
+                    [_vm._v("Guardar")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         ]),
         _vm._v(" "),
         _c(
@@ -61132,15 +61396,18 @@ var render = function() {
                   ])
                 ])
               ]
-            )
+            ),
+            _vm._v(" "),
+            _c("p", { staticClass: "text-dark" }, [
+              _vm._v(
+                "NOTA: Al momento de seleccionar o arrastrar la imagen se actualizará el logo."
+              )
+            ])
           ],
           1
         )
-      ]),
-      _vm._v(" "),
-      _c("b-button", { on: { click: _vm.hideModal } }, [_vm._v("Close Me")])
-    ],
-    1
+      ])
+    ]
   )
 }
 var staticRenderFns = []
@@ -61168,26 +61435,14 @@ var render = function() {
   return _c("div", { staticClass: "row" }, [
     _c("div", { staticClass: "col-md-12" }, [
       _c("div", { staticClass: "card" }, [
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
+        _c("div", { staticClass: "card-header" }, [
+          _c("div", { staticClass: "row" }, [
+            _vm._m(0),
+            _vm._v(" "),
             _c(
               "div",
-              { staticClass: "row" },
+              { staticClass: "col-md-6 d-flex justify-content-end" },
               [
-                _c("div", { staticClass: "col-md-6" }, [
-                  _c("h1", {
-                    domProps: { textContent: _vm._s(_vm.auth.name) }
-                  }),
-                  _vm._v(" "),
-                  _c("h2", {
-                    domProps: { textContent: _vm._s(_vm.auth.email) }
-                  })
-                ]),
-                _vm._v(" "),
-                _vm._m(0),
-                _vm._v(" "),
                 _c(
                   "b-button",
                   {
@@ -61199,13 +61454,98 @@ var render = function() {
                       }
                     ],
                     ref: "btnShow",
-                    attrs: { variant: "primary" }
+                    attrs: { variant: "primary" },
+                    on: {
+                      click: function($event) {
+                        return _vm.perfil()
+                      }
+                    }
                   },
                   [_vm._v("Editar datos")]
                 )
               ],
               1
-            ),
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c("div", { staticClass: "row" }, [
+              _c("div", { staticClass: "col-md-6" }, [
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    [_vm._v("Nombre:")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6 text-uppercase" }, [
+                    _c("p", {
+                      domProps: { textContent: _vm._s(_vm.user.name) }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    [_vm._v("Correo electrónico:")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("p", {
+                      domProps: { textContent: _vm._s(_vm.user.email) }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    [_vm._v("RUC:")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("p", { domProps: { textContent: _vm._s(_vm.user.ruc) } })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    [_vm._v("Num. teléfono / Celular:")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("p", {
+                      domProps: { textContent: _vm._s(_vm.user.telefono) }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "row" }, [
+                  _c(
+                    "div",
+                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    [_vm._v("Dirección:")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("p", {
+                      domProps: { textContent: _vm._s(_vm.user.direccion) }
+                    })
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _vm._m(1)
+            ]),
             _vm._v(" "),
             _c("editar-profile")
           ],
@@ -61221,7 +61561,15 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-6" }, [
-      _c("h4", [_vm._v("Logo de la empresa")])
+      _c("h4", [_vm._v("Datos de la empresa")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-6" }, [
+      _c("h5", [_vm._v("Logo de la empresa")])
     ])
   }
 ]
@@ -78544,6 +78892,8 @@ Vue.component("documents-list", __webpack_require__(/*! ./components/documents/D
 Vue.component("productos", __webpack_require__(/*! ./components/product/ProductsList.vue */ "./resources/js/components/product/ProductsList.vue").default);
 Vue.component("clientes", __webpack_require__(/*! ./components/clients/ClientsList.vue */ "./resources/js/components/clients/ClientsList.vue").default);
 Vue.component("profile-view", __webpack_require__(/*! ./components/auth/ProfileView.vue */ "./resources/js/components/auth/ProfileView.vue").default);
+var auth = document.querySelector("meta[name='user']").getAttribute("content");
+window.Auth = JSON.parse(auth);
 var app = new Vue({
   el: "#vapp"
 });

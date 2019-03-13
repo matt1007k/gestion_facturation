@@ -22,7 +22,7 @@
 </ol>
 <div class="container-fluid">
     <div class="animated fadeIn">
-    <profile-view :auth="{{Auth::user()}}"></profile-view>
+    <profile-view ></profile-view>
     </div>
 </div>
 @endsection
