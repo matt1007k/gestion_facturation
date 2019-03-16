@@ -14,6 +14,7 @@
                 id="tipo"
                 class="form-control"
                 :class="{'is-invalid': errors.tipo}"
+                @change="tipoDocumento($event)"
               >
                 <option value disabled hidden>----- Seleccionar -----</option>
                 <option
@@ -72,15 +73,14 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="tipo">Tipo de documento</label>
-                <select
+                <b-form-select
                   v-model="tipo_doc"
                   id="tipo"
-                  class="form-control"
                   :class="{'is-invalid': errors.tipo_doc}"
-                >
-                  <option value disabled hidden>----- Seleccionar -----</option>
-                  <option v-for="tipo in tipos_doc" :key="tipo">{{tipo}}</option>
-                </select>
+                  :options="options_tipos_doc"
+                  @change="tipoClient($event)"
+                />
+
                 <div class="invalid-feedback" v-if="errors.tipo_doc">{{errors.tipo_doc[0]}}</div>
               </div>
             </div>
@@ -138,8 +138,7 @@
                   <th class="text-center">Descripcion</th>
                   <th class="text-center">Precio</th>
                   <th class="text-center">Cantidad</th>
-                  <th class="text-center">Sub. total</th>
-                  <th class="text-center">IGV</th>
+                  <th class="text-center">Unidad</th>
                   <th class="text-center">Importe</th>
                   <th class="text-center"></th>
                 </thead>
@@ -160,13 +159,9 @@
                           @change="updateQtyProductFromCart($event, item.id)"
                         >
                       </td>
-                      <td class="text-right">{{ item.price * item.quantity}}</td>
-                      <td
-                        class="text-right"
-                      >{{parseFloat((item.price * item.quantity) * 0.18).toFixed(2) }}</td>
-                      <td
-                        class="text-right"
-                      >{{(item.price * item.quantity) + ((item.price * item.quantity) * 0.18)}}</td>
+
+                      <td class="text-right">Kls</td>
+                      <td class="text-right">{{ parseFloat(item.price * item.quantity).toFixed(2)}}</td>
                       <td>
                         <button
                           type="button"
@@ -250,7 +245,12 @@ export default {
     return {
       tipos: [],
       observation: "",
-      tipos_doc: [],
+      tipo_doc: null,
+      options_tipos_doc: [
+        { value: null, text: "----- Seleccionar -----" },
+        { value: "DNI", text: "DNI" },
+        { value: "RUC", text: "RUC" }
+      ],
       cart: [],
       products: [],
       name: "",
@@ -264,7 +264,6 @@ export default {
       },
       offset: 3,
       tipo: "",
-      tipo_doc: "",
       fecha_emision: "",
       num_serie: "",
       num_emision: "",
@@ -281,7 +280,7 @@ export default {
         .then(res => {
           this.products = res.data.products.data;
           this.tipos = res.data.tipos;
-          this.tipos_doc = res.data.tipos_doc;
+          //this.tipos_doc = res.data.tipos_doc;
           this.pagination = res.data.pagination;
         })
         .catch(error => console.log(error));
@@ -373,7 +372,7 @@ export default {
     subTotal() {
       const subTotal = this.cart
         .map(function(item) {
-          return item.price * item.quantity + item.price * item.quantity * 0.18;
+          return item.price * item.quantity;
         })
         .reduce(function(a, b) {
           return a + b;
@@ -397,7 +396,21 @@ export default {
       this.nombre = "";
       this.direccion = "";
       this.cart = [];
-    }
+    },
+    tipoDocumento(ev) {
+      console.log(ev.target.value);
+      let tipo = ev.target.value;
+      if (tipo === "FA") {
+        this.tipo_doc = "RUC";
+        this.num_serie = "F001";
+        this.num_emision = "0000001";
+      } else if (tipo === "BO") {
+        this.tipo_doc = "DNI";
+        this.num_serie = "B001";
+        this.num_emision = "0000001";
+      }
+    },
+    tipoClient(ev) {}
   },
   created() {
     this.getProducts();

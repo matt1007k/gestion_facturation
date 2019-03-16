@@ -51,7 +51,7 @@ class VentasController extends Controller
     {
         $tipo = "FACTURA ELECTRÓNICA";
         $pdf = "";
-
+        
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
 
         if($comprobante->tipo === 'FA'){

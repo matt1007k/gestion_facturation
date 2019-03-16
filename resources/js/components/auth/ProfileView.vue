@@ -53,6 +53,12 @@
             </div>
             <div class="col-md-6">
               <h5>Logo de la empresa</h5>
+              <template v-if="user.logo !== 'logo.png'  ">
+                <img :src="user.logo" :alt="user.name" width="200" height="75">
+              </template>
+              <template v-else>
+                <p class="text-info">No tiene un logo subido</p>
+              </template>
             </div>
           </div>
           <editar-profile></editar-profile>

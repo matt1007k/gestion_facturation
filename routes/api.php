@@ -18,6 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/getUserAuth', 'Admin\UsersController@getUserAuth')->name('getUserAuth')->middleware('auth:api');
+Route::put('/usuario/{usuario}', 'Admin\UsersController@update')->name('usuario.update');
+
+Route::post('/upload', 'Admin\UsersController@upload')->name('usuario.upload');
 
 Route::get('/getProducts', 'Admin\ProductsController@getProducts')->name('getProducts');
 Route::post('/productos', 'Admin\ProductsController@store')->name('productos.store');
