@@ -30,6 +30,8 @@ Route::delete('/productos/{producto}', 'Admin\ProductsController@destroy')->name
 Route::get('/getSales', 'Admin\VentasController@getSales')->name('getSales');
 
 Route::get('/getClients', 'Admin\ClientsController@getClients')->name('getClients');
+Route::get('/getClientes', 'Admin\ClientsController@getClientes')->name('getClientes');
+
 Route::post('/clientes', 'Admin\ClientsController@store')->name('clientes.store');
 Route::put('/clientes/{cliente}', 'Admin\ClientsController@update')->name('clientes.update');
 Route::delete('/clientes/{cliente}', 'Admin\ClientsController@destroy')->name('clientes.destroy');

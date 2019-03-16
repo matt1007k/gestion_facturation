@@ -8,7 +8,8 @@
         <form @submit.prevent="generarDoc">
           <div class="row mb-3">
             <div class="col-md-3">
-              <label for="fecha">Tipo de comprobante</label>
+              <p class="text-danger">Estos campos son obligatorios (*)</p>
+              <label for="fecha">Tipo de comprobante (*)</label>
               <select
                 v-model="tipo"
                 id="tipo"
@@ -29,18 +30,18 @@
           <h4>Comprobante</h4>
           <div class="row mb-3">
             <div class="col-md-3">
-              <label for="fecha">Fecha de Emisión</label>
-              <input
-                type="date"
+              <label for="fecha">Fecha de Emisión (*)</label>
+              <date-picker
                 v-model="fecha_emision"
                 id="fecha"
-                class="form-control"
+                lang="es"
                 :class="{'is-invalid': errors.fecha_emision}"
-              >
+              ></date-picker>
               <div class="invalid-feedback" v-if="errors.fecha_emision">{{errors.fecha_emision[0]}}</div>
             </div>
+
             <div class="col-md-3">
-              <label for="codigo">Serie de Emision</label>
+              <label for="codigo">Serie de Emision (*)</label>
               <input
                 type="text"
                 class="form-control"
@@ -52,7 +53,7 @@
               <div class="invalid-feedback" v-if="errors.num_serie">{{errors.num_serie[0]}}</div>
             </div>
             <div class="col-md-3">
-              <label for="tipo">Número de Emision</label>
+              <label for="tipo">Número de Emision (*)</label>
               <input
                 type="text"
                 class="form-control"
@@ -72,19 +73,18 @@
           <div class="row mb-3">
             <div class="col-md-3">
               <div class="form-group">
-                <label for="tipo">Tipo de documento</label>
+                <label for="tipo">Tipo de documento (*)</label>
                 <b-form-select
                   v-model="tipo_doc"
                   id="tipo"
                   :class="{'is-invalid': errors.tipo_doc}"
                   :options="options_tipos_doc"
-                  @change="tipoClient($event)"
                 />
 
                 <div class="invalid-feedback" v-if="errors.tipo_doc">{{errors.tipo_doc[0]}}</div>
               </div>
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <label for="num_doc">Número de documento</label>
               <input
                 type="text"
@@ -95,18 +95,24 @@
                 placeholder="Ingrese número del documento"
               >
               <div class="invalid-feedback" v-if="errors.num_doc">{{errors.num_doc[0]}}</div>
-            </div>
-            <div class="col-md-6">
-              <label for="nombre">Apellidos y nombres o razon social</label>
-              <input
-                type="text"
-                class="form-control"
-                :class="{'is-invalid': errors.nombre}"
-                v-model="nombre"
-                id="nombre"
-                placeholder="Ingrese los datos o razon del cliente"
+            </div>-->
+            <div class="col-md-9">
+              <label for="nombre">Apellidos y nombres o razon social (*)</label>
+              <multiselect
+                v-model="cliente"
+                :options="options_clients"
+                placeholder="Buscar un cliente..."
+                :loading="isLoading"
+                label="nombre"
+                track-by="nombre"
+                :options-limit="300"
+                :custom-label="numWithName"
+                :limit="3"
+                @search-change="filterDataClient"
               >
-              <div class="invalid-feedback" v-if="errors.nombre">{{errors.nombre[0]}}</div>
+                <span slot="noResult">Oops! El cliente no existe!!.</span>
+              </multiselect>
+              <div class="invalid-feedback" v-if="errors.cliente">{{errors.cliente.nombre[0]}}</div>
             </div>
             <div class="col-md-6">
               <label for="direccion">Direccion del cliente</label>
@@ -131,6 +137,7 @@
           </div>
           <div class="row mt-3">
             <div class="col-md-12">
+              <h5>Producto(s) a vender (*)</h5>
               <table class="table table-hover table-responsive">
                 <thead>
                   <th class="text-center">#</th>
@@ -236,13 +243,19 @@
 </template>
 
 <script>
+import Multiselect from "vue-multiselect";
+import DatePicker from "vue2-datepicker";
+
 import ModalProduct from "./ModalProduct.vue";
 import ModalComprobante from "./ModalComprobante.vue";
 export default {
-  components: { ModalProduct, ModalComprobante },
+  components: { ModalProduct, ModalComprobante, Multiselect, DatePicker },
   name: "generar-factura",
   data() {
     return {
+      cliente: { nombre: "", num_doc: "" },
+      options_clients: [],
+      isLoading: false,
       tipos: [],
       observation: "",
       tipo_doc: null,
@@ -264,11 +277,9 @@ export default {
       },
       offset: 3,
       tipo: "",
-      fecha_emision: "",
+      fecha_emision: new Date(),
       num_serie: "",
       num_emision: "",
-      num_doc: "",
-      nombre: "",
       direccion: "",
       errors: {}
     };
@@ -296,8 +307,8 @@ export default {
         fecha_emision: this.fecha_emision,
         num_serie: this.num_serie,
         num_emision: this.num_emision,
-        num_doc: this.num_doc,
-        nombre: this.nombre,
+        // num_doc: this.num_doc,
+        cliente: this.cliente,
         direccion: this.direccion,
         details: this.cart,
         subtotal: this.subTotal(),
@@ -388,12 +399,11 @@ export default {
     },
     resetField() {
       this.tipo = "";
-      this.tipo_doc = "";
-      this.fecha_emision = "";
+      this.tipo_doc = null;
+      this.fecha_emision = new Date();
       this.num_serie = "";
       this.num_emision = "";
-      this.num_doc = "";
-      this.nombre = "";
+      this.cliente = { nombre: "", num_doc: "" };
       this.direccion = "";
       this.cart = [];
     },
@@ -410,10 +420,37 @@ export default {
         this.num_emision = "0000001";
       }
     },
-    tipoClient(ev) {}
+    getClients() {
+      this.isLoading = true;
+      axios
+        .get(`/api/getClientes`)
+        .then(response => {
+          this.options_clients = response.data.clients;
+          this.isLoading = false;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    numWithName({ nombre, num_doc }) {
+      if (!nombre && !num_doc) {
+        return "Que cliente desea buscar...!!";
+      }
+      return `${num_doc} — ${nombre}`;
+    },
+    filterDataClient(ev) {
+      this.isLoading = true;
+      if (!ev) {
+        this.direccion = this.cliente.direccion;
+        this.isLoading = false;
+      } else {
+        console.log("vacio");
+      }
+    }
   },
   created() {
     this.getProducts();
+    this.getClients();
   },
   computed: {
     searchOnProducts() {

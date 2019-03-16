@@ -29,8 +29,7 @@ class GenerarRequest extends FormRequest
             'fecha_emision' => 'required',
             'num_serie' => 'required',
             'num_emision' => 'required|numeric',
-            'num_doc' => 'required',
-            'nombre' => 'required',
+            'cliente.nombre' => 'required',
             'details' => 'required',
         ];
     }

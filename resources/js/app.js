@@ -2,6 +2,8 @@ require("./bootstrap");
 
 import $ from "jquery";
 
+import "vue-multiselect/dist/vue-multiselect.min.css";
+
 $('[data-toggle="tooltip"]').tooltip();
 
 $('[data-toggle="popover"]').popover();

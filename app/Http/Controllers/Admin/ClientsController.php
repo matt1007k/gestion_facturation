@@ -30,6 +30,14 @@ class ClientsController extends Controller
         ], 200);
     }
 
+    public function getClientes(Request $request)
+    {
+        $clients = Client::orderBy('nombre', 'asc')->get();
+
+        return response()->json([
+            'clients' => $clients
+        ], 200);
+    }
     
     public function store(Request $request)
     {
