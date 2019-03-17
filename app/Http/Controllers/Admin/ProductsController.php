@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Product;
-
+use Illuminate\Support\Facades\Auth;
 class ProductsController extends Controller
 {
     
     public function getProducts(Request $request){
-        $products = Product::orderBy('name', 'asc')->paginate(6);
+        $products = Product::where('user_id', Auth::id())->orderBy('name', 'asc')->paginate(6);
 
         $tipos = [
             ['FA', 'Factura'], 
@@ -43,7 +43,7 @@ class ProductsController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required',
+            'code' => 'required|unique:products,code',
             'price' => 'required',
             'quantity' => 'required',
         ]);
@@ -56,6 +56,7 @@ class ProductsController extends Controller
         $product->quantity = $request->quantity;
         $product->img = 'producto.jpg';
         $product->status = $request->status;
+        $product->user_id = $request->user_id;
 
         if ($product->save()) {
             return response()->json([

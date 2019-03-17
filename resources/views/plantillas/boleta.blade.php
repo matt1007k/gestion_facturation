@@ -151,9 +151,8 @@
                     <td class="text-left">{{$detail['descripcion']}}</td>
                     <td class="text-right">{{$detail['precio']}} </td>
                     <td class="text-right">{{$detail['descuento']}}</td>
+                    <td class="text-right">{{$detail['unidad']}}</td>                    
                     <td class="text-right">{{$detail['subtotal']}}</td>
-                    <td class="text-right">{{$detail['subtotal'] * 0.18}}</td>
-                    <td class="text-right">{{$detail['subtotal'] + ($detail['subtotal'] * 0.18)}}</td>
                 </tr>
             @endforeach          
             

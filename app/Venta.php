@@ -22,4 +22,8 @@ class Venta extends Model
     public function details(){
         return $this->hasMany('App\Detalle');
     }
+
+    public function user(){
+        return $this->belongsTo('App\User');
+    }
 }

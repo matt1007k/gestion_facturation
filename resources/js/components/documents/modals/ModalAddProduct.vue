@@ -1,9 +1,9 @@
 <template>
   <!-- Modal Component -->
   <b-modal
-    id="modalPrevent"
+    id="modalAddProduct"
     ref="modal"
-    title="Registrar Producto"
+    title="Registrar un producto nuevo"
     hide-footer
     size="lg"
     class="modal-primary"
@@ -57,8 +57,8 @@
               id="price"
               min="0"
               value="1"
-              step="0.01"
               type="number"
+              step="0.01"
               v-model.trim="$v.price.$model"
               :class="{ 'is-invalid': $v.price.$error }"
             >
@@ -72,7 +72,7 @@
               class="form-control"
               id="quantity"
               min="0"
-              value="1"
+              value="0"
               type="number"
               v-model.trim="$v.quantity.$model"
               :class="{ 'is-invalid': $v.quantity.$error }"
@@ -99,7 +99,7 @@
             <div
               class="invalid-feedback"
               v-if="!$v.code.minLength"
-            >Este campo tiene que tener {{$v.code.$params.minLength.min}} como minimo.</div>
+            >Este campo tiene que tener {{$v.code.$params.minLength.min}} como mínimo.</div>
           </div>
         </div>
         <div class="col-md">
@@ -138,7 +138,8 @@ export default {
   },
   methods: {
     hideModal() {
-      this.$root.$emit("bv::hide::modal", "modalPrevent");
+      this.$root.$emit("bv::hide::modal", "modalAddProduct");
+      console.log(this.$parent.$parent.products);
     },
     async handleSubmit() {
       console.log("submit!");
@@ -164,9 +165,10 @@ export default {
           };
           this.$nextTick(() => {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
-            this.$refs.modal.hide();
+            this.hideModal();
           });
-          this.$emit("getProducts", this.getProducts());
+          this.$parent.$parent.products.unshift(result.data.product);
+
           this.$snack.success(config);
         } else {
           console.log(result);

@@ -96,12 +96,12 @@
               >
               <div class="invalid-feedback" v-if="errors.num_doc">{{errors.num_doc[0]}}</div>
             </div>-->
-            <div class="col-md-9">
+            <div class="col-md-6">
               <label for="nombre">Apellidos y nombres o razon social (*)</label>
               <multiselect
                 v-model="cliente"
                 :options="options_clients"
-                placeholder="Buscar un cliente..."
+                placeholder="Buscar un cliente por DNI o nombre..."
                 :loading="isLoading"
                 label="nombre"
                 track-by="nombre"
@@ -113,6 +113,12 @@
                 <span slot="noResult">Oops! El cliente no existe!!.</span>
               </multiselect>
               <div class="invalid-feedback" v-if="errors.cliente">{{errors.cliente.nombre[0]}}</div>
+            </div>
+            <div class="col-md-2 d-flex align-self-center">
+              <b-button v-b-modal.modalAddClient variant="success">
+                <i class="icon-plus icons"></i>
+                Nuevo Cliente
+              </b-button>
             </div>
             <div class="col-md-6">
               <label for="direccion">Direccion del cliente</label>
@@ -187,7 +193,7 @@
               </table>
               <div
                 class="alert alert-danger"
-                v-if="errors.details || !cart"
+                v-if="errors.details || cart.lenght > 0"
               >Los productos son necesarios para un venta.</div>
             </div>
           </div>
@@ -236,6 +242,7 @@
             @ChangePage="changePage"
           ></modal-product>
           <modal-comprobante></modal-comprobante>
+          <modal-add-client></modal-add-client>
         </form>
       </div>
     </div>
@@ -246,10 +253,18 @@
 import Multiselect from "vue-multiselect";
 import DatePicker from "vue2-datepicker";
 
-import ModalProduct from "./ModalProduct.vue";
-import ModalComprobante from "./ModalComprobante.vue";
+import ModalProduct from "./modals/ModalProduct.vue";
+import ModalComprobante from "./modals/ModalComprobante.vue";
+
+import ModalAddClient from "./modals/ModalAddClient.vue";
 export default {
-  components: { ModalProduct, ModalComprobante, Multiselect, DatePicker },
+  components: {
+    ModalProduct,
+    ModalComprobante,
+    Multiselect,
+    DatePicker,
+    ModalAddClient
+  },
   name: "generar-factura",
   data() {
     return {
@@ -287,7 +302,7 @@ export default {
   methods: {
     getProducts(page) {
       axios
-        .get(`/api/getProducts?page=${page}`)
+        .get(`/getProducts?page=${page}`)
         .then(res => {
           this.products = res.data.products.data;
           this.tipos = res.data.tipos;
@@ -313,7 +328,8 @@ export default {
         details: this.cart,
         subtotal: this.subTotal(),
         igv: this.igvSubTotal(),
-        total: this.Total()
+        total: this.Total(),
+        user_id: window.Auth.id
       };
       axios
         .post("/generar", data)
@@ -423,7 +439,7 @@ export default {
     getClients() {
       this.isLoading = true;
       axios
-        .get(`/api/getClientes`)
+        .get(`/getClientes`)
         .then(response => {
           this.options_clients = response.data.clients;
           this.isLoading = false;
@@ -440,17 +456,22 @@ export default {
     },
     filterDataClient(ev) {
       this.isLoading = true;
-      if (!ev) {
-        this.direccion = this.cliente.direccion;
-        this.isLoading = false;
-      } else {
-        console.log("vacio");
-      }
+
+      axios
+        .get(`/getClientes?query=${ev}`)
+        .then(response => {
+          this.options_clients = response.data.clients;
+          this.direccion = this.cliente.direccion;
+          this.isLoading = false;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   created() {
     this.getProducts();
-    this.getClients();
+    // this.getClients();
   },
   computed: {
     searchOnProducts() {

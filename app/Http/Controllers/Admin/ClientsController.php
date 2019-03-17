@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientsController extends Controller
 {
@@ -13,7 +14,7 @@ class ClientsController extends Controller
     }
     public function getClients(Request $request)
     {
-        $clients = Client::orderBy('nombre', 'asc')->paginate(6);
+        $clients = Client::where('user_id', Auth::id())->orderBy('nombre', 'asc')->paginate(6);
 
         $pagination = [
             'total' => $clients->total(),
@@ -32,7 +33,8 @@ class ClientsController extends Controller
 
     public function getClientes(Request $request)
     {
-        $clients = Client::orderBy('nombre', 'asc')->get();
+        $texto = $request->get('query');
+        $clients = Client::nombre($texto)->where('user_id', Auth::id())->orderBy('nombre', 'asc')->get();
 
         return response()->json([
             'clients' => $clients
@@ -52,6 +54,7 @@ class ClientsController extends Controller
         $client->tipo_doc = $request->tipo_doc;
         $client->num_doc = $request->num_doc;
         $client->direccion = $request->direccion;   
+        $client->user_id = $request->user_id;
 
         if ($client->save()) {
             return response()->json([

@@ -22,15 +22,18 @@ Auth::routes();
 Route::middleware('auth')->group(function() {
     Route::get('/home', 'HomeController@index')->name('home');
 
-    Route::get('/productos', 'Admin\ProductsController@index')->name('productos.index');   
+    Route::get('/productos', 'Admin\ProductsController@index')->name('productos.index'); 
+    Route::get('/getProducts', 'Admin\ProductsController@getProducts')->name('getProducts');  
     // Route::resource('productos', 'Admin\ProductsController');    
 
     Route::get('/documentos', 'Admin\VentasController@index')->name('documentos.index');
     Route::get('/documentos/create', 'Admin\VentasController@create')->name('documentos.create');
+    Route::get('/getSales', 'Admin\VentasController@getSales')->name('getSales');
 
 
     Route::get('/clientes', 'Admin\ClientsController@index')->name('clientes.index');
-
+    Route::get('/getClients', 'Admin\ClientsController@getClients')->name('getClients');
+    Route::get('/getClientes', 'Admin\ClientsController@getClientes')->name('getClientes');
 
     Route::post('/generar', 'Admin\VentasController@generar')->name('generar');   
 

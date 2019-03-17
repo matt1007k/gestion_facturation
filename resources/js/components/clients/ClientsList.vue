@@ -128,7 +128,7 @@ export default {
   },
   methods: {
     async getClients(page) {
-      let result = await axios.get(`/api/getClients?page=${page}`);
+      let result = await axios.get(`/getClients?page=${page}`);
       if (result) {
         console.log(result);
         this.clients = result.data.clients.data;

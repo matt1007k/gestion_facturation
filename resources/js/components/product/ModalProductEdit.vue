@@ -57,6 +57,7 @@
               id="price"
               min="0"
               value="1"
+              step="0.01"
               type="number"
               v-model.trim="$v.price.$model"
               :class="{ 'is-invalid': $v.price.$error }"

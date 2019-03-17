@@ -1,9 +1,9 @@
 <template>
   <!-- Modal Component -->
   <b-modal
-    id="modalClientCreate"
+    id="modalAddClient"
     ref="modal"
-    title="Registrar Cliente"
+    title="Registrar un Cliente"
     hide-footer
     size="lg"
     class="modal-primary"
@@ -88,9 +88,6 @@
 <script>
 import { required, minLength, number } from "vuelidate/lib/validators";
 export default {
-  props: {
-    getClients: Function
-  },
   data() {
     return {
       nombre: "",
@@ -106,7 +103,7 @@ export default {
   },
   methods: {
     hideModal() {
-      this.$root.$emit("bv::hide::modal", "modalClientCreate");
+      this.$root.$emit("bv::hide::modal", "modalAddClient");
       this.nombre = null;
       this.tipo_doc = null;
       this.num_doc = null;
@@ -128,6 +125,7 @@ export default {
 
         let result = await axios.post("/api/clientes", data);
         if (result) {
+          this.$parent.cliente = { nombre: this.nombre, num_doc: this.num_doc };
           let config = {
             text: result.data.message,
             button: "ok"
@@ -136,7 +134,6 @@ export default {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
             this.$refs.modal.hide();
           });
-          this.$emit("getClients", this.getClients());
           this.$snack.success(config);
         } else {
           console.log(result);

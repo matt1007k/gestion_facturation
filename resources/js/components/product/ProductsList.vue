@@ -136,7 +136,7 @@ export default {
   },
   methods: {
     async getProducts(page) {
-      let result = await axios.get(`/api/getProducts?page=${page}`);
+      let result = await axios.get(`/getProducts?page=${page}`);
       if (result) {
         console.log(result);
         this.products = result.data.products.data;

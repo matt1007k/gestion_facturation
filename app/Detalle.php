@@ -12,6 +12,7 @@ class Detalle extends Model
         'nombre', 
         'descripcion',
         'precio',
+        'unidad',
         'descuento',
         'subtotal'
     ];

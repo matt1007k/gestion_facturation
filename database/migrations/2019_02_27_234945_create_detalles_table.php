@@ -20,6 +20,7 @@ class CreateDetallesTable extends Migration
             $table->string('descripcion', 200);
             $table->decimal('precio', 8, 2);
             $table->decimal('descuento', 8, 2)->default(0.0);
+            $table->string('unidad', 30);
             $table->decimal('subtotal', 8, 2);
             $table->unsignedInteger('venta_id');
             $table->foreign('venta_id')->references('id')

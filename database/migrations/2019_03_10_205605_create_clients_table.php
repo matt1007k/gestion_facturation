@@ -19,6 +19,9 @@ class CreateClientsTable extends Migration
             $table->string('tipo_doc', 30);
             $table->string('num_doc', 12);
             $table->string('direccion', 255)->nullable();
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')
+                    ->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

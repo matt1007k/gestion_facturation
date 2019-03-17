@@ -26,6 +26,9 @@ class CreateVentasTable extends Migration
             $table->decimal('subtotal', 8, 2);
             $table->decimal('igv', 8, 2);
             $table->decimal('total', 8, 2);
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')
+                    ->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ class ProductsTableSeeder extends Seeder
             'description' => "Descripcion del producto 1",
             'quantity' => 50,
             'img' => "producto_1.jpg",
+            'user_id' => 1,
             'status' => "available",
         ]);
 
@@ -29,6 +30,7 @@ class ProductsTableSeeder extends Seeder
             'description' => "Descripcion del producto 2",
             'quantity' => 10,
             'img' => "producto_2.jpg",
+            'user_id' => 1,
             'status' => "available",
         ]);
 
@@ -39,6 +41,7 @@ class ProductsTableSeeder extends Seeder
             'description' => "Descripcion del producto 3",
             'quantity' => 35,
             'img' => "producto_3.jpg",
+            'user_id' => 1,
             'status' => "available",
         ]);
     }

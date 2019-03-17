@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Product;
 use App\Venta;
 use App\Detalle;
-
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\GenerarRequest;
 //use SoapClient;
 use PDF;
@@ -25,7 +25,7 @@ class VentasController extends Controller
     }
 
     public function getSales(Request $request){
-        $sales = Venta::orderBy('created_at', 'desc')->paginate(6);
+        $sales = Venta::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(6);
 
         $pagination = [
             'total' => $sales->total(),
@@ -98,12 +98,13 @@ class VentasController extends Controller
         $venta->num_comprobante = $request->num_serie.'-'.$request->num_emision;
         $venta->fecha_emision = $request->fecha_emision;
         $venta->tipo_doc = $request->tipo_doc;
-        $venta->num_doc = $request->num_doc;
-        $venta->nombre = $request->nombre;
-        $venta->direccion = $request->direccion;
+        $venta->num_doc = $request->cliente->num_doc;
+        $venta->nombre = $request->cliente->nombre;
+        $venta->direccion = $request->cliente->direccion;
         $venta->subtotal = $request->subtotal;
         $venta->igv = $request->igv;
         $venta->total = $request->subtotal + $request->igv;
+        $venta->user_id = $request->user_id;
         
         if($venta->save()){
             foreach ($request->details as $detalle_venta) { 
@@ -114,6 +115,7 @@ class VentasController extends Controller
                 $detalle->descripcion = $detalle_venta['description'];
                 $detalle->precio = $detalle_venta['price'];
                 $detalle->descuento = 0.00;
+                $detalle->unidad = $detalle_venta['unidad'];
                 $detalle->subtotal = $detalle_venta['price'] * $detalle_venta['quantity'];
                 $detalle->save();
             }
