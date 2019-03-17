@@ -2919,6 +2919,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
@@ -2980,12 +2983,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.pagination.current_page = page;
       this.getSales(page);
     },
-    downloadSale: function downloadSale(num_comprobante) {
+    downloadPDF: function downloadPDF(num_comprobante) {
       if (!num_comprobante) {
         return;
       }
 
       return location.href = "/descargar/".concat(num_comprobante);
+    },
+    downloadTXT: function downloadTXT(num_comprobante) {
+      if (!num_comprobante) {
+        return;
+      }
+
+      return location.href = "/txt/".concat(num_comprobante);
     } // eliminarSale(id){
     //     swal({
     //         title: "Estas seguro de eliminar?",
@@ -3540,7 +3550,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var _this3 = this;
 
       this.isLoading = true;
-      axios.get("/getClientes").then(function (response) {
+      axios.get("/getClientes/".concat(this.tipo_doc)).then(function (response) {
         _this3.options_clients = response.data.clients;
         _this3.isLoading = false;
       }).catch(function (err) {
@@ -3560,8 +3570,17 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     filterDataClient: function filterDataClient(ev) {
       var _this4 = this;
 
+      if (!this.tipo) {
+        var config = {
+          text: "Tienes que elegir un comprobante",
+          button: "ok"
+        };
+        this.$snack.danger(config);
+        return;
+      }
+
       this.isLoading = true;
-      axios.get("/getClientes?query=".concat(ev)).then(function (response) {
+      axios.get("/getClientes/".concat(this.tipo_doc, "?query=").concat(ev)).then(function (response) {
         _this4.options_clients = response.data.clients;
         _this4.direccion = _this4.cliente.direccion;
         _this4.isLoading = false;
@@ -3791,6 +3810,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                     nombre: this.nombre,
                     num_doc: this.num_doc
                   };
+                  this.$parent.direccion = this.direccion;
                   config = {
                     text: result.data.message,
                     button: "ok"
@@ -63303,11 +63323,24 @@ var render = function() {
                             attrs: { variant: "primary", size: "sm" },
                             on: {
                               click: function($event) {
-                                return _vm.downloadSale(sale.num_comprobante)
+                                return _vm.downloadPDF(sale.num_comprobante)
                               }
                             }
                           },
                           [_c("span", [_vm._v("PDF")])]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-button",
+                          {
+                            attrs: { variant: "info", size: "sm" },
+                            on: {
+                              click: function($event) {
+                                return _vm.downloadTXT(sale.num_comprobante)
+                              }
+                            }
+                          },
+                          [_c("span", [_vm._v("TXT")])]
                         )
                       ],
                       1
@@ -80389,7 +80422,7 @@ Vue.component("documents-list", __webpack_require__(/*! ./components/documents/D
 Vue.component("productos", __webpack_require__(/*! ./components/product/ProductsList.vue */ "./resources/js/components/product/ProductsList.vue").default);
 Vue.component("clientes", __webpack_require__(/*! ./components/clients/ClientsList.vue */ "./resources/js/components/clients/ClientsList.vue").default);
 Vue.component("profile-view", __webpack_require__(/*! ./components/auth/ProfileView.vue */ "./resources/js/components/auth/ProfileView.vue").default);
-var auth = document.querySelector("meta[name='user']").getAttribute("content");
+var auth = document.querySelector("meta[name='user']").getAttribute("content") || {};
 window.Auth = JSON.parse(auth);
 var app = new Vue({
   el: "#vapp"

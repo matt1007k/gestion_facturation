@@ -33,13 +33,14 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/clientes', 'Admin\ClientsController@index')->name('clientes.index');
     Route::get('/getClients', 'Admin\ClientsController@getClients')->name('getClients');
-    Route::get('/getClientes', 'Admin\ClientsController@getClientes')->name('getClientes');
+    Route::get('/getClientes/{tipo}', 'Admin\ClientsController@getClientes')->name('getClientes');
 
     Route::post('/generar', 'Admin\VentasController@generar')->name('generar');   
 
     Route::get('/comprobante/{num_comprobante}', 'Admin\VentasController@pdf')->name('pdf');
     Route::get('/descargar/{num_comprobante}', 'Admin\VentasController@descargar')->name('descargar');
     // Route::get('/boletas/{num_comprobante}', 'Admin\VentasController@pdf')->name('boletas');
+    Route::get('/txt/{num_comprobante}', 'Admin\VentasController@descargartxt')->name('txt');
 
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
 });

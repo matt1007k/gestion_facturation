@@ -439,7 +439,7 @@ export default {
     getClients() {
       this.isLoading = true;
       axios
-        .get(`/getClientes`)
+        .get(`/getClientes/${this.tipo_doc}`)
         .then(response => {
           this.options_clients = response.data.clients;
           this.isLoading = false;
@@ -455,10 +455,19 @@ export default {
       return `${num_doc} — ${nombre}`;
     },
     filterDataClient(ev) {
+      if (!this.tipo) {
+        let config = {
+          text: "Tienes que elegir un comprobante",
+          button: "ok"
+        };
+
+        this.$snack.danger(config);
+        return;
+      }
       this.isLoading = true;
 
       axios
-        .get(`/getClientes?query=${ev}`)
+        .get(`/getClientes/${this.tipo_doc}?query=${ev}`)
         .then(response => {
           this.options_clients = response.data.clients;
           this.direccion = this.cliente.direccion;

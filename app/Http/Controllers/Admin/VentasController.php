@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Product;
 use App\Venta;
 use App\Detalle;
-use Illuminate\Support\Facades\Auth;
+use App\User;
+
 use App\Http\Requests\GenerarRequest;
 //use SoapClient;
 use PDF;
@@ -51,19 +57,22 @@ class VentasController extends Controller
     {
         $tipo = "FACTURA ELECTRÓNICA";
         $pdf = "";
-        
+        $empresa = User::findOrFail(Auth::id());
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
-
+        // dd($empresa['logo']);
+        // dd(public_path());
+        // dd(base_path().$empresa['logo']);
+        
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
         }elseif ($comprobante->tipo === 'BO') {
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
         }
         //$pdf->setPaper('a4', 'landscape');
         return $pdf->stream();
-        // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+        // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
     }
 
     public function descargar($num_comprobante)
@@ -71,23 +80,70 @@ class VentasController extends Controller
         $tipo = "FACTURA ELECTRÓNICA";
         $num_tipo = "";
         $pdf = "";
-        $RUC = "11010101010";
+        $empresa = User::findOrFail(Auth::id());
 
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
 
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
             $num_tipo = "01";
-            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
         }elseif ($comprobante->tipo === 'BO') {
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
             $num_tipo = "03";
-            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
         }
         //$pdf->setPaper('a4', 'landscape');
-        $name_pdf = $RUC.'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.pdf';
+        $name_pdf = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.pdf';
         return $pdf->download($name_pdf);
-        // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo]);
+        // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+    }
+
+    public function descargartxt($num_comprobante){
+        $tipo = "FACTURA ELECTRÓNICA";
+        $num_tipo = "";
+        $tipo_doc = "";
+        $empresa = User::findOrFail(Auth::id());
+        
+        $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
+
+        if($comprobante->tipo === 'FA'){
+            $tipo = "FACTURA ELECTRÓNICA";
+            $num_tipo = "01";
+            $tipo_doc = "RUC";
+            
+        }elseif ($comprobante->tipo === 'BO') {
+            $tipo = "BOLETA DE VENTA ELECTRÓNICA";
+            $num_tipo = "03"; 
+            $tipo_doc = "DNI";           
+        }
+
+        $content = "";
+
+        $content .= "Comprobante: ".$tipo."|".$comprobante->num_comprobante."\n";
+        $content .= "RESUMEN DE VENTA: \n";
+        $content .= "Tienda: ".$empresa->name."|RUC: ".$empresa->ruc."\n";
+        $content .= "Cliente: ".$comprobante->nombre."|Tipo Doc.: ".$tipo_doc."|Num. Doc.: ".$comprobante->num_doc."|Fecha: ".$comprobante->fecha_emision."\n";
+        $content .= "DETALLE DE VENTA \n";
+        foreach ($comprobante->details as $detalle) {
+            $content .= "Descripcion: ".$detalle->descripcion."|Cantidad: ".(int)$detalle->cantidad."|Precio: ".$detalle->precio."|Importe: ".$detalle->subtotal."\n";
+        }
+        $content .= "Subtotal: ".$comprobante->subtotal."\n";
+        $content .= "Ivg: ".$comprobante->igv."\n";
+        $content .= "Total a pagar: ".$comprobante->total."\n";
+
+
+        $name_txt = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.txt';
+        
+        
+
+        //offer the content of txt as a download ($name_txt.txt)
+        return response($content)
+                ->withHeaders([
+                    'Content-Type' => 'text/plain',
+                    'Cache-Control' => 'no-store, no-cache',
+                    'Content-Disposition' => 'attachment; filename="'.$name_txt,
+                ]);
     }
     
     public function generar(GenerarRequest $request)
@@ -96,11 +152,11 @@ class VentasController extends Controller
         
         $venta->tipo = $request->tipo;
         $venta->num_comprobante = $request->num_serie.'-'.$request->num_emision;
-        $venta->fecha_emision = $request->fecha_emision;
+        $venta->fecha_emision = Carbon::parse($request->fecha_emision)->format('Y-m-d');
         $venta->tipo_doc = $request->tipo_doc;
-        $venta->num_doc = $request->cliente->num_doc;
-        $venta->nombre = $request->cliente->nombre;
-        $venta->direccion = $request->cliente->direccion;
+        $venta->num_doc = $request->cliente['num_doc'];
+        $venta->nombre = $request->cliente['nombre'];
+        $venta->direccion = $request->cliente['direccion'];
         $venta->subtotal = $request->subtotal;
         $venta->igv = $request->igv;
         $venta->total = $request->subtotal + $request->igv;
@@ -115,7 +171,7 @@ class VentasController extends Controller
                 $detalle->descripcion = $detalle_venta['description'];
                 $detalle->precio = $detalle_venta['price'];
                 $detalle->descuento = 0.00;
-                $detalle->unidad = $detalle_venta['unidad'];
+                $detalle->unidad = $detalle_venta['unity'];
                 $detalle->subtotal = $detalle_venta['price'] * $detalle_venta['quantity'];
                 $detalle->save();
             }
@@ -125,19 +181,7 @@ class VentasController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        
-        
-    }
-
-    
-    public function show($id)
-    {
-        
-    }
-
-   
+       
     public function edit($id)
     {
         //

@@ -56,9 +56,8 @@ Vue.component(
     "profile-view",
     require("./components/auth/ProfileView.vue").default
 );
-const auth = document
-    .querySelector("meta[name='user']")
-    .getAttribute("content");
+const auth =
+    document.querySelector("meta[name='user']").getAttribute("content") || {};
 window.Auth = JSON.parse(auth);
 
 const app = new Vue({

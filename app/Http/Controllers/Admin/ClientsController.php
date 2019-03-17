@@ -31,10 +31,12 @@ class ClientsController extends Controller
         ], 200);
     }
 
-    public function getClientes(Request $request)
+    public function getClientes(Request $request, $tipo)
     {
         $texto = $request->get('query');
-        $clients = Client::nombre($texto)->where('user_id', Auth::id())->orderBy('nombre', 'asc')->get();
+        $clients = Client::where('user_id', Auth::id())
+            ->where('tipo_doc', $tipo)->nombre($texto)
+            ->orderBy('nombre', 'asc')->get();
 
         return response()->json([
             'clients' => $clients

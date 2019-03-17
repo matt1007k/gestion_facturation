@@ -39,8 +39,11 @@
               <td>{{sale.igv}}</td>
               <td>{{sale.total}}</td>
               <td>
-                <b-button variant="primary" size="sm" @click="downloadSale(sale.num_comprobante)">
+                <b-button variant="primary" size="sm" @click="downloadPDF(sale.num_comprobante)">
                   <span>PDF</span>
+                </b-button>
+                <b-button variant="info" size="sm" @click="downloadTXT(sale.num_comprobante)">
+                  <span>TXT</span>
                 </b-button>
               </td>
             </tr>
@@ -119,11 +122,17 @@ export default {
       this.pagination.current_page = page;
       this.getSales(page);
     },
-    downloadSale(num_comprobante) {
+    downloadPDF(num_comprobante) {
       if (!num_comprobante) {
         return;
       }
       return (location.href = `/descargar/${num_comprobante}`);
+    },
+    downloadTXT(num_comprobante) {
+      if (!num_comprobante) {
+        return;
+      }
+      return (location.href = `/txt/${num_comprobante}`);
     }
     // eliminarSale(id){
     //     swal({

@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->decimal('price', 7, 2)->default(0.00);
             $table->text('description');
             $table->integer('quantity')->default(0);
-            $table->integer('unity')->nullable('Kg');
+            $table->string('unity')->default('Kg');
             $table->string('img');
             $table->enum('status', ['available', 'unavailable']);
             $table->unsignedInteger('user_id');

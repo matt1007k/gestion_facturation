@@ -126,6 +126,7 @@ export default {
         let result = await axios.post("/api/clientes", data);
         if (result) {
           this.$parent.cliente = { nombre: this.nombre, num_doc: this.num_doc };
+          this.$parent.direccion = this.direccion;
           let config = {
             text: result.data.message,
             button: "ok"
