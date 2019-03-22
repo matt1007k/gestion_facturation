@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Venta;
 
 class HomeController extends Controller
 {
@@ -24,5 +25,15 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function getCodes(){
+        $totalFacturas = Venta::where('tipo', 'FA')->get();
+        $totalBoletas = Venta::where('tipo', 'BO')->get();
+
+        return response()->json([
+            'totalFacturas' => count($totalFacturas),
+            'totalBoletas' => count($totalBoletas)
+        ], 200);
     }
 }

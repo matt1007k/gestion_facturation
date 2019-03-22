@@ -1985,9 +1985,14 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.myVueDropzone.removeAllFiles();
       this.$nextTick(function () {
         // // // Wrapped in $nextTick to ensure DOM is rendered before closing
-        _this2.$refs.modal.hide();
+        _this2.$snack.success(config);
+
+        setTimeout(function () {
+          _this2.$refs.modal.hide();
+
+          location.href = "/perfil";
+        }, 2000);
       });
-      this.$snack.success(config);
       console.log(this.$refs.myVueDropzone);
     },
     failed: function failed(file, message, xhr) {
@@ -3438,7 +3443,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       };
       axios.post("/generar", data).then(function (result) {
         console.log(result);
-        _this2.$children[1].url = result.data;
+        _this2.$children[4].url = result.data;
 
         _this2.$root.$emit("bv::show::modal", "modalComprobante");
 
@@ -3538,12 +3543,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
       if (tipo === "FA") {
         this.tipo_doc = "RUC";
-        this.num_serie = "F001";
-        this.num_emision = "0000001";
+        this.num_serie = localStorage.getItem("facSerie");
+        this.num_emision = localStorage.getItem("facEmision");
       } else if (tipo === "BO") {
         this.tipo_doc = "DNI";
-        this.num_serie = "B001";
-        this.num_emision = "0000001";
+        this.num_serie = localStorage.getItem("bolSerie");
+        this.num_emision = localStorage.getItem("bolEmision");
       }
     },
     getClients: function getClients() {
@@ -80388,6 +80393,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var vue_snack__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue-snack */ "./node_modules/vue-snack/dist/vue-snack.min.js");
 /* harmony import */ var vue_snack__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vue_snack__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -80398,6 +80405,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(".popover-dismiss").popover({
   trigger: "focus"
 });
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
 
 
 
@@ -80425,7 +80433,20 @@ Vue.component("profile-view", __webpack_require__(/*! ./components/auth/ProfileV
 var auth = document.querySelector("meta[name='user']").getAttribute("content") || {};
 window.Auth = JSON.parse(auth);
 var app = new Vue({
-  el: "#vapp"
+  el: "#vapp",
+  created: function created() {
+    axios__WEBPACK_IMPORTED_MODULE_5___default.a.get("/getCodes").then(function (result) {
+      console.log(result.data);
+      var facEmision = "000000".concat(result.data.totalFacturas + 1);
+      var bolEmision = "000000".concat(result.data.totalBoletas + 1);
+      localStorage.setItem("facSerie", "F001");
+      localStorage.setItem("facEmision", facEmision);
+      localStorage.setItem("bolSerie", "B001");
+      localStorage.setItem("bolEmision", bolEmision);
+    }).catch(function (err) {
+      return console.log(err);
+    });
+  }
 });
 
 /***/ }),

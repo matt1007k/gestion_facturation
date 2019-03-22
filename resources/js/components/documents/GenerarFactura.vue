@@ -335,7 +335,7 @@ export default {
         .post("/generar", data)
         .then(result => {
           console.log(result);
-          this.$children[1].url = result.data;
+          this.$children[4].url = result.data;
           this.$root.$emit("bv::show::modal", "modalComprobante");
           this.resetField();
         })
@@ -428,12 +428,12 @@ export default {
       let tipo = ev.target.value;
       if (tipo === "FA") {
         this.tipo_doc = "RUC";
-        this.num_serie = "F001";
-        this.num_emision = "0000001";
+        this.num_serie = localStorage.getItem("facSerie");
+        this.num_emision = localStorage.getItem("facEmision");
       } else if (tipo === "BO") {
         this.tipo_doc = "DNI";
-        this.num_serie = "B001";
-        this.num_emision = "0000001";
+        this.num_serie = localStorage.getItem("bolSerie");
+        this.num_emision = localStorage.getItem("bolEmision");
       }
     },
     getClients() {

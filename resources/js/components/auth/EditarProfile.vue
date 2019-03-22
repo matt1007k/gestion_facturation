@@ -170,9 +170,12 @@ export default {
       this.$refs.myVueDropzone.removeAllFiles();
       this.$nextTick(() => {
         // // // Wrapped in $nextTick to ensure DOM is rendered before closing
-        this.$refs.modal.hide();
+        this.$snack.success(config);
+        setTimeout(() => {
+          this.$refs.modal.hide();
+          location.href = "/perfil";
+        }, 2000);
       });
-      this.$snack.success(config);
       console.log(this.$refs.myVueDropzone);
     },
     failed(file, message, xhr) {

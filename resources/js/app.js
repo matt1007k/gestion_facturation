@@ -15,6 +15,7 @@ window.Vue = require("vue");
 import BootstrapVue from "bootstrap-vue";
 import Vuelidate from "vuelidate";
 import VueSnackbar from "vue-snack";
+import Axios from "axios";
 
 Vue.use(BootstrapVue);
 Vue.use(Vuelidate);
@@ -61,5 +62,18 @@ const auth =
 window.Auth = JSON.parse(auth);
 
 const app = new Vue({
-    el: "#vapp"
+    el: "#vapp",
+    created() {
+        Axios.get("/getCodes")
+            .then(result => {
+                console.log(result.data);
+                let facEmision = `000000${result.data.totalFacturas + 1}`;
+                let bolEmision = `000000${result.data.totalBoletas + 1}`;
+                localStorage.setItem("facSerie", "F001");
+                localStorage.setItem("facEmision", facEmision);
+                localStorage.setItem("bolSerie", "B001");
+                localStorage.setItem("bolEmision", bolEmision);
+            })
+            .catch(err => console.log(err));
+    }
 });
