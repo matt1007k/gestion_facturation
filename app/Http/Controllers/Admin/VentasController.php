@@ -134,17 +134,18 @@ class VentasController extends Controller
         $content .= "Total a pagar: ".$comprobante->total."\n";
 
 
-        $name_txt = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.txt';
+        $name_txt = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.CAB';
         
-        
+        $from = base_path().'/storage/app/public/files/'.$name_txt;
+        $to = '/mnt/d/Code/DATA';
 
-        //offer the content of txt as a download ($name_txt.txt)
-        return response($content)
-                ->withHeaders([
-                    'Content-Type' => 'text/plain',
-                    'Cache-Control' => 'no-store, no-cache',
-                    'Content-Disposition' => 'attachment; filename="'.$name_txt,
-                ]);
+        //Recorro el directorio para leer los archivos que tiene
+        $nombre_archivo = "2.txt";
+        $contenido = "Hola, mundo. Soy el contenido del archivo :)";
+
+        $resultado = file_put_contents("/mnt/d/Code/DATA/$nombre_archivo", $contenido);
+
+        echo $resultado;
     }
 
     public function txtCab($num_comprobante){
@@ -187,10 +188,10 @@ class VentasController extends Controller
         $name_det = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.DET';
         $name_ley = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.LEY';
         
-        $headers1 = array(
-            'Content-Type' => 'plain/txt',
-            'Content-Disposition' => sprintf('attachment; filename="%s"', $name_cab)
-        );
+        // $headers1 = array(
+        //     'Content-Type' => 'plain/txt',
+        //     'Content-Disposition' => sprintf('attachment; filename="%s"', $name_cab)
+        // );
 
         $headers = array(
             'Content-Type' => 'plain/txt'
