@@ -2567,6 +2567,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.$nextTick(function () {
                     // // // Wrapped in $nextTick to ensure DOM is rendered before closing
                     _this.$refs.modal.hide();
+
+                    _this.cleanField();
                   });
                   this.$emit("getClients", this.getClients());
                   this.$snack.success(config);
@@ -2587,7 +2589,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return handleSubmit;
-    }()
+    }(),
+    cleanField: function cleanField() {
+      this.nombre = null;
+      this.tipo_doc = null;
+      this.num_doc = null;
+      this.direccion = null;
+    }
   },
   validations: {
     nombre: {
@@ -3823,6 +3831,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.$nextTick(function () {
                     // // // Wrapped in $nextTick to ensure DOM is rendered before closing
                     _this.$refs.modal.hide();
+
+                    _this.cleanField();
                   });
                   this.$snack.success(config);
                 } else {
@@ -3842,7 +3852,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return handleSubmit;
-    }()
+    }(),
+    cleanField: function cleanField() {
+      this.nombre = null;
+      this.tipo_doc = null;
+      this.num_doc = null;
+      this.direccion = null;
+    }
   },
   validations: {
     nombre: {
@@ -4072,6 +4088,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.$nextTick(function () {
                     // // // Wrapped in $nextTick to ensure DOM is rendered before closing
                     _this.hideModal();
+
+                    _this.cleanField();
                   });
                   this.$parent.$parent.products.unshift(result.data.product);
                   this.$snack.success(config);
@@ -4092,7 +4110,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return handleSubmit;
-    }()
+    }(),
+    cleanField: function cleanField() {
+      this.name = "";
+      this.description = "";
+      this.price = 0.0;
+      this.quantity = 0;
+      this.status = "available";
+    }
   },
   validations: {
     code: {
@@ -4542,6 +4567,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   this.$nextTick(function () {
                     // // // Wrapped in $nextTick to ensure DOM is rendered before closing
                     _this.$refs.modal.hide();
+
+                    _this.cleanField();
                   });
                   this.$emit("getProducts", this.getProducts());
                   this.$snack.success(config);
@@ -4562,7 +4589,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return handleSubmit;
-    }()
+    }(),
+    cleanField: function cleanField() {
+      this.name = "";
+      this.description = "";
+      this.price = 0.0;
+      this.quantity = 0;
+      this.status = "available";
+    }
   },
   validations: {
     code: {
@@ -62297,7 +62331,7 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c(
                     "div",
-                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    { staticClass: "col-md-6 text-md-right font-weight-bold" },
                     [_vm._v("Nombre:")]
                   ),
                   _vm._v(" "),
@@ -62311,7 +62345,7 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c(
                     "div",
-                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    { staticClass: "col-md-6 text-md-right font-weight-bold" },
                     [_vm._v("Correo electrónico:")]
                   ),
                   _vm._v(" "),
@@ -62325,7 +62359,7 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c(
                     "div",
-                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    { staticClass: "col-md-6 text-md-right font-weight-bold" },
                     [_vm._v("RUC:")]
                   ),
                   _vm._v(" "),
@@ -62337,7 +62371,7 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c(
                     "div",
-                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    { staticClass: "col-md-6 text-md-right font-weight-bold" },
                     [_vm._v("Num. teléfono / Celular:")]
                   ),
                   _vm._v(" "),
@@ -62351,7 +62385,7 @@ var render = function() {
                 _c("div", { staticClass: "row" }, [
                   _c(
                     "div",
-                    { staticClass: "col-md-6 text-right font-weight-bold" },
+                    { staticClass: "col-md-6 text-md-right font-weight-bold" },
                     [_vm._v("Dirección:")]
                   ),
                   _vm._v(" "),
@@ -62734,7 +62768,7 @@ var render = function() {
           _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col-md-12" }, [
               _c("div", { staticClass: "form-group" }, [
-                _c("label", { attrs: { for: "nombre" } }, [_vm._v("Nombre")]),
+                _c("label", { attrs: { for: "nombre" } }, [_vm._v("Nombre: ")]),
                 _vm._v(" "),
                 _c("input", {
                   directives: [
@@ -62782,7 +62816,7 @@ var render = function() {
                       _vm._v(
                         "El nombre tiene que tener " +
                           _vm._s(_vm.$v.nombre.$params.minLength.min) +
-                          " como minimo."
+                          " como mínimo."
                       )
                     ])
                   : _vm._e()
@@ -62797,7 +62831,7 @@ var render = function() {
                 { staticClass: "form-group" },
                 [
                   _c("label", { attrs: { for: "tipo_doc" } }, [
-                    _vm._v("Tipo de documento")
+                    _vm._v("Tipo de documento: ")
                   ]),
                   _vm._v(" "),
                   _c("b-form-select", {
@@ -62829,7 +62863,7 @@ var render = function() {
             _c("div", { staticClass: "col-md-6" }, [
               _c("div", { staticClass: "form-group" }, [
                 _c("label", { attrs: { for: "num_doc" } }, [
-                  _vm._v("Numero de Doc.")
+                  _vm._v("Número de Doc.:")
                 ]),
                 _vm._v(" "),
                 _c("input", {
@@ -62875,7 +62909,7 @@ var render = function() {
                 _vm._v(" "),
                 !_vm.$v.num_doc.minLength
                   ? _c("div", { staticClass: "invalid-feedback" }, [
-                      _vm._v("El numero de documento no es valido.")
+                      _vm._v("El numero de documento no es válido.")
                     ])
                   : _vm._e()
               ])
@@ -62886,7 +62920,7 @@ var render = function() {
             _c("div", { staticClass: "col-md-12" }, [
               _c("div", { staticClass: "form-group" }, [
                 _c("label", { attrs: { for: "direccion" } }, [
-                  _vm._v("Direccion")
+                  _vm._v("Dirección:")
                 ]),
                 _vm._v(" "),
                 _c("textarea", {
@@ -80436,13 +80470,17 @@ var app = new Vue({
   el: "#vapp",
   created: function created() {
     axios__WEBPACK_IMPORTED_MODULE_5___default.a.get("/getCodes").then(function (result) {
-      console.log(result.data);
       var facEmision = "000000".concat(result.data.totalFacturas + 1);
       var bolEmision = "000000".concat(result.data.totalBoletas + 1);
       localStorage.setItem("facSerie", "F001");
       localStorage.setItem("facEmision", facEmision);
       localStorage.setItem("bolSerie", "B001");
       localStorage.setItem("bolEmision", bolEmision);
+    }).catch(function (err) {
+      return console.log(err);
+    });
+    axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/txtcab/F001-0000001').then(function (result) {
+      console.log(result.data);
     }).catch(function (err) {
       return console.log(err);
     });
@@ -81562,8 +81600,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/max/Documentos/web/gestion_facturation/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/max/Documentos/web/gestion_facturation/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /mnt/d/Code/gestion_facturation/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /mnt/d/Code/gestion_facturation/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

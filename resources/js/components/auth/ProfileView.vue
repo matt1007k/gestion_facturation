@@ -21,31 +21,31 @@
           <div class="row">
             <div class="col-md-6">
               <div class="row">
-                <div class="col-md-6 text-right font-weight-bold">Nombre:</div>
+                <div class="col-md-6 text-md-right font-weight-bold">Nombre:</div>
                 <div class="col-md-6 text-uppercase">
                   <p v-text="user.name"></p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 text-right font-weight-bold">Correo electrónico:</div>
+                <div class="col-md-6 text-md-right font-weight-bold">Correo electrónico:</div>
                 <div class="col-md-6">
                   <p v-text="user.email"></p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 text-right font-weight-bold">RUC:</div>
+                <div class="col-md-6 text-md-right font-weight-bold">RUC:</div>
                 <div class="col-md-6">
                   <p v-text="user.ruc"></p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 text-right font-weight-bold">Num. teléfono / Celular:</div>
+                <div class="col-md-6 text-md-right font-weight-bold">Num. teléfono / Celular:</div>
                 <div class="col-md-6">
                   <p v-text="user.telefono"></p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-6 text-right font-weight-bold">Dirección:</div>
+                <div class="col-md-6 text-md-right font-weight-bold">Dirección:</div>
                 <div class="col-md-6">
                   <p v-text="user.direccion"></p>
                 </div>

@@ -165,6 +165,7 @@ export default {
           this.$nextTick(() => {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
             this.$refs.modal.hide();
+            this.cleanField();
           });
           this.$emit("getProducts", this.getProducts());
           this.$snack.success(config);
@@ -172,6 +173,13 @@ export default {
           console.log(result);
         }
       }
+    },
+    cleanField(){
+      this.name = "";
+      this.description = "";
+      this.price = 0.0;
+      this.quantity = 0;
+      this.status = "available";
     }
   },
   validations: {

@@ -66,7 +66,6 @@ const app = new Vue({
     created() {
         Axios.get("/getCodes")
             .then(result => {
-                console.log(result.data);
                 let facEmision = `000000${result.data.totalFacturas + 1}`;
                 let bolEmision = `000000${result.data.totalBoletas + 1}`;
                 localStorage.setItem("facSerie", "F001");
@@ -75,5 +74,10 @@ const app = new Vue({
                 localStorage.setItem("bolEmision", bolEmision);
             })
             .catch(err => console.log(err));
+        
+        Axios.get('/txtcab/F001-0000001').then(result => {
+            console.log(result.data);
+        })
+        .catch(err => console.log(err));
     }
 });

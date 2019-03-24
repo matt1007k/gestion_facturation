@@ -166,6 +166,7 @@ export default {
           this.$nextTick(() => {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
             this.hideModal();
+            this.cleanField();
           });
           this.$parent.$parent.products.unshift(result.data.product);
 
@@ -174,6 +175,13 @@ export default {
           console.log(result);
         }
       }
+    },
+    cleanField(){
+      this.name = "";
+      this.description = "";
+      this.price = 0.0;
+      this.quantity = 0;
+      this.status = "available";
     }
   },
   validations: {

@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
-            <label for="nombre">Nombre</label>
+            <label for="nombre">Nombre: </label>
             <input
               class="form-control"
               id="nombre"
@@ -25,7 +25,7 @@
             <div
               class="invalid-feedback"
               v-if="!$v.nombre.minLength"
-            >El nombre tiene que tener {{$v.nombre.$params.minLength.min}} como minimo.</div>
+            >El nombre tiene que tener {{$v.nombre.$params.minLength.min}} como mínimo.</div>
           </div>
         </div>
       </div>
@@ -33,7 +33,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="tipo_doc">Tipo de documento</label>
+            <label for="tipo_doc">Tipo de documento: </label>
             <b-form-select
               v-model.trim="$v.tipo_doc.$model"
               :options="options"
@@ -44,7 +44,7 @@
         </div>
         <div class="col-md-6">
           <div class="form-group">
-            <label for="num_doc">Numero de Doc.</label>
+            <label for="num_doc">Número de Doc.:</label>
             <input
               class="form-control"
               id="num_doc"
@@ -57,7 +57,7 @@
             <div
               class="invalid-feedback"
               v-if="!$v.num_doc.minLength"
-            >El numero de documento no es valido.</div>
+            >El numero de documento no es válido.</div>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
-            <label for="direccion">Direccion</label>
+            <label for="direccion">Dirección:</label>
             <textarea
               class="form-control"
               id="direccion"
@@ -135,6 +135,7 @@ export default {
           this.$nextTick(() => {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
             this.$refs.modal.hide();
+            this.cleanField();
           });
           this.$emit("getClients", this.getClients());
           this.$snack.success(config);
@@ -142,6 +143,12 @@ export default {
           console.log(result);
         }
       }
+    }, 
+    cleanField(){
+      this.nombre = null;
+      this.tipo_doc = null;
+      this.num_doc = null;
+      this.direccion = null;
     }
   },
   validations: {

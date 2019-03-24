@@ -2,7 +2,7 @@
     <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{{ route('home') }}">
         @if (auth()->user()->logo !== 'logo.png')            
             <img class="navbar-brand-full" src="{{ url(auth()->user()->logo) }}" width="100" height="30" alt="{{auth()->user()->name}}">
         @else

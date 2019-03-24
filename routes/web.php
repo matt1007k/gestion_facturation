@@ -31,6 +31,8 @@ Route::middleware('auth')->group(function() {
     // Route::get('/boletas/{num_comprobante}', 'Admin\VentasController@pdf')->name('boletas');
     Route::get('/txt/{num_comprobante}', 'Admin\VentasController@descargartxt')->name('txt');
 
+    Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
+
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
 });
 

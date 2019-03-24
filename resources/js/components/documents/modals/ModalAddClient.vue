@@ -134,12 +134,19 @@ export default {
           this.$nextTick(() => {
             // // // Wrapped in $nextTick to ensure DOM is rendered before closing
             this.$refs.modal.hide();
+            this.cleanField();
           });
           this.$snack.success(config);
         } else {
           console.log(result);
         }
       }
+    },
+    cleanField(){
+      this.nombre = null;
+      this.tipo_doc = null;
+      this.num_doc = null;
+      this.direccion = null;
     }
   },
   validations: {
