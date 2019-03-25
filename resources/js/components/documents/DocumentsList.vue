@@ -45,6 +45,9 @@
                 <b-button variant="info" size="sm" @click="downloadTXT(sale.num_comprobante)">
                   <span>TXT</span>
                 </b-button>
+                <b-button variant="success" size="sm" @click="imprimirPDF(sale.num_comprobante)">
+                  <i class="icon-printer icons"></i>
+                </b-button>
               </td>
             </tr>
           </template>
@@ -132,7 +135,23 @@ export default {
       if (!num_comprobante) {
         return;
       }
-      return (location.href = `/txt/${num_comprobante}`);
+      axios
+        .get(`/txt/${num_comprobante}`)
+        .then(result => {
+          let config = {
+            text: result.data.message,
+            button: "ok"
+          };
+
+          this.$snack.success(config);
+        })
+        .catch(err => console.log(err));
+    },
+    imprimirPDF(num_comprobante) {
+      if (!num_comprobante) {
+        return;
+      }
+      return (location.href = `/comprobante/${num_comprobante}`);
     }
     // eliminarSale(id){
     //     swal({

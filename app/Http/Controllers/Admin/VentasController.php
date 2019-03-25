@@ -15,6 +15,8 @@ use App\Venta;
 use App\Detalle;
 use App\User;
 
+use App\Helpers\ConvertNumToLetter;
+
 use App\Http\Requests\GenerarRequest;
 //use SoapClient;
 use PDF;
@@ -63,13 +65,16 @@ class VentasController extends Controller
         // dd($empresa['logo']);
         // dd(public_path());
         // dd(base_path().$empresa['logo']);
+
+        $convertirString = new ConvertNumToLetter();
+        $total_string = $convertirString->convertir($comprobante->total);
         
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
         }elseif ($comprobante->tipo === 'BO') {
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
         }
         //$pdf->setPaper('a4', 'landscape');
         return $pdf->stream();
@@ -85,14 +90,17 @@ class VentasController extends Controller
 
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
 
+        $convertirString = new ConvertNumToLetter();
+        $total_string = $convertirString->convertir($comprobante->total);
+
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
             $num_tipo = "01";
-            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
         }elseif ($comprobante->tipo === 'BO') {
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
             $num_tipo = "03";
-            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
         }
         //$pdf->setPaper('a4', 'landscape');
         $name_pdf = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.pdf';
@@ -101,6 +109,9 @@ class VentasController extends Controller
     }
 
     public function descargartxt($num_comprobante){
+
+        $folder_generate = "D:/Code/DATA/";
+
         $tipo = "FACTURA ELECTRÓNICA";
         $num_tipo = "";
         $tipo_doc = "";
@@ -108,46 +119,82 @@ class VentasController extends Controller
         
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
 
+        $content_cab = "";
+        $content_det = "";
+        $content_ley = "";
+        $content_tri = "";
+        $hora_emision = Carbon::parse($comprobante->created_at)->format('h:i:s');
+
+        $convertir = new ConvertNumToLetter();
+        $detalle_ley = $convertir->convertir($comprobante->total);
+
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
             $num_tipo = "01";
             $tipo_doc = "RUC";
+            // CABECERA
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|6|$comprobante->ruc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";
             
+            // DETALLE VENTA
+            foreach ($comprobante->details as $detalle) {
+                $cantidad = (int)$detalle->cantidad;
+                $igv = $detalle->subtotal * 0.18;
+                $precioUntIgv = $detalle->subtotal + $igv;
+                $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
+            }
+
+            // LEYENDA
+            //$comprobante->total
+            $content_ley .= "1000|$detalle_ley";
+
+            // TRIBUTO
+            $content_tri .= "1000|IGV|VAT|$comprobante->subtotal|$comprobante->igv";
+
         }elseif ($comprobante->tipo === 'BO') {
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
             $num_tipo = "03"; 
-            $tipo_doc = "DNI";           
-        }
-
-        $content = "";
-
-        $content .= "Comprobante: ".$tipo."|".$comprobante->num_comprobante."\n";
-        $content .= "RESUMEN DE VENTA: \n";
-        $content .= "Tienda: ".$empresa->name."|RUC: ".$empresa->ruc."\n";
-        $content .= "Cliente: ".$comprobante->nombre."|Tipo Doc.: ".$tipo_doc."|Num. Doc.: ".$comprobante->num_doc."|Fecha: ".$comprobante->fecha_emision."\n";
-        $content .= "DETALLE DE VENTA \n";
-        foreach ($comprobante->details as $detalle) {
-            $content .= "Descripcion: ".$detalle->descripcion."|Cantidad: ".(int)$detalle->cantidad."|Precio: ".$detalle->precio."|Importe: ".$detalle->subtotal."\n";
-        }
-        $content .= "Subtotal: ".$comprobante->subtotal."\n";
-        $content .= "Ivg: ".$comprobante->igv."\n";
-        $content .= "Total a pagar: ".$comprobante->total."\n";
-
-
-        $name_txt = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.CAB';
+            $tipo_doc = "DNI";   
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|1|$comprobante->ruc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";        
         
-        $from = base_path().'/storage/app/public/files/'.$name_txt;
-        $to = '/mnt/d/Code/DATA';
+            // DETALLE VENTA
+            foreach ($comprobante->details as $detalle) {
+                $cantidad = (int)$detalle->cantidad;
+                $igv = $detalle->subtotal * 0.18;
+                $precioUntIgv = $detalle->subtotal + $igv;
+                $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
+            }
 
+            // LEYENDA
+            $content_ley .= "1000|$detalle_ley";
+
+            // TRIBUTO
+            $content_tri .= "1000|IGV|VAT|$comprobante->subtotal|$comprobante->igv";
+        }
+
+        
+
+        
         //Recorro el directorio para leer los archivos que tiene
-        $nombre_archivo = "2.txt";
-        $contenido = "Hola, mundo. Soy el contenido del archivo :)";
+        $name_cab = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.CAB';
+        $name_det = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.DET';
+        $name_ley = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.LEY';
+        $name_tri = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.TRI';
 
-        $resultado = file_put_contents("/mnt/d/Code/DATA/$nombre_archivo", $contenido);
+        
 
-        echo $resultado;
+        // /mnt/d/ con subsystem linux on windowns 10
+        file_put_contents($folder_generate.$name_cab, $content_cab);
+        file_put_contents($folder_generate.$name_det, $content_det);
+
+        file_put_contents($folder_generate.$name_ley, $content_ley);
+        file_put_contents($folder_generate.$name_tri, $content_tri);
+        
+        return response()->json([
+            'message' => 'Archivos generados con exito'
+        ], 200);
     }
 
+    
     public function txtCab($num_comprobante){
         $tipo = "FACTURA ELECTRÓNICA";
         $num_tipo = "";
@@ -241,7 +288,8 @@ class VentasController extends Controller
         if($venta->save()){
             foreach ($request->details as $detalle_venta) { 
                 $detalle = new Detalle(); 
-                $detalle->venta_id = $venta->id;            
+                $detalle->venta_id = $venta->id;   
+                $detalle->codigo = $detalle_venta['code'];         
                 $detalle->cantidad = $detalle_venta['quantity'];
                 $detalle->nombre = $detalle_venta['name'];
                 $detalle->descripcion = $detalle_venta['description'];

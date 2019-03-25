@@ -74,10 +74,10 @@ const app = new Vue({
                 localStorage.setItem("bolEmision", bolEmision);
             })
             .catch(err => console.log(err));
-        
-        Axios.get('/txtcab/F001-0000001').then(result => {
-            console.log(result.data);
-        })
-        .catch(err => console.log(err));
+
+        // Axios.get('/txtcab/F001-0000001').then(result => {
+        //     console.log(result.data);
+        // })
+        // .catch(err => console.log(err));
     }
 });

@@ -2935,6 +2935,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
@@ -3004,11 +3007,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return location.href = "/descargar/".concat(num_comprobante);
     },
     downloadTXT: function downloadTXT(num_comprobante) {
+      var _this = this;
+
       if (!num_comprobante) {
         return;
       }
 
-      return location.href = "/txt/".concat(num_comprobante);
+      axios.get("/txt/".concat(num_comprobante)).then(function (result) {
+        var config = {
+          text: result.data.message,
+          button: "ok"
+        };
+
+        _this.$snack.success(config);
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    },
+    imprimirPDF: function imprimirPDF(num_comprobante) {
+      if (!num_comprobante) {
+        return;
+      }
+
+      return location.href = "/comprobante/".concat(num_comprobante);
     } // eliminarSale(id){
     //     swal({
     //         title: "Estas seguro de eliminar?",
@@ -3040,10 +3061,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   computed: {
     searchOnSales: function searchOnSales() {
-      var _this = this;
+      var _this2 = this;
 
       return this.sales.filter(function (item) {
-        return item.nombre.toLowerCase().includes(_this.name.toLowerCase());
+        return item.nombre.toLowerCase().includes(_this2.name.toLowerCase());
       });
     },
     isActivedPage: function isActivedPage() {
@@ -3452,6 +3473,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       axios.post("/generar", data).then(function (result) {
         console.log(result);
         _this2.$children[4].url = result.data;
+        _this2.$children[4].num_comprobante = "".concat(_this2.num_serie, "-").concat(_this2.num_emision);
 
         _this2.$root.$emit("bv::show::modal", "modalComprobante");
 
@@ -4182,24 +4204,40 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "modal-comprobante",
   data: function data() {
     return {
-      url: 'http://localhost:8000/documentos'
+      url: "http://localhost:8000/documentos",
+      num_comprobante: ""
     };
   },
   methods: {
     hideModal: function hideModal() {
-      this.$root.$emit('bv::hide::modal', 'modalComprobante'); // this.url = process.env.MIX_APP_URL
+      this.$root.$emit("bv::hide::modal", "modalComprobante"); // this.url = process.env.MIX_APP_URL
     },
     printComprobante: function printComprobante() {
       return location.href = this.url;
     },
+    generateFiles: function generateFiles() {
+      var _this = this;
+
+      axios.get("/txt/".concat(this.num_comprobante)).then(function (result) {
+        var config = {
+          text: result.data.message,
+          button: "ok"
+        };
+
+        _this.$snack.success(config);
+
+        _this.$root.$emit("bv::hide::modal", "modalComprobante");
+      }).catch(function (err) {
+        return console.log(err);
+      });
+    },
     goListComprobantes: function goListComprobantes() {
-      return location.href = '/documentos';
+      return location.href = "/documentos";
     }
   }
 });
@@ -63380,6 +63418,19 @@ var render = function() {
                             }
                           },
                           [_c("span", [_vm._v("TXT")])]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "b-button",
+                          {
+                            attrs: { variant: "success", size: "sm" },
+                            on: {
+                              click: function($event) {
+                                return _vm.imprimirPDF(sale.num_comprobante)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "icon-printer icons" })]
                         )
                       ],
                       1
@@ -64838,7 +64889,7 @@ var render = function() {
     [
       _c(
         "div",
-        { staticClass: "full-width d-flex justify-content-center" },
+        { staticClass: "full-width d-flex justify-content-between" },
         [
           _c(
             "b-button",
@@ -64850,6 +64901,16 @@ var render = function() {
               _c("span", [_vm._v("Imprimir A4")]),
               _vm._v(" "),
               _c("i", { staticClass: "icon-doc icons font-4xl" })
+            ]
+          ),
+          _vm._v("O\n    "),
+          _c(
+            "b-button",
+            { attrs: { variant: "primary" }, on: { click: _vm.generateFiles } },
+            [
+              _c("span", [_vm._v("Generar archivos")]),
+              _vm._v(" "),
+              _c("i", { staticClass: "icon-cloud-download icons font-4xl" })
             ]
           )
         ],
@@ -64877,7 +64938,7 @@ var render = function() {
               attrs: { variant: "success" },
               on: { click: _vm.goListComprobantes }
             },
-            [_vm._v("\n                Lista de comprobantes\n            ")]
+            [_vm._v("Lista de comprobantes")]
           )
         ],
         1
@@ -64947,33 +65008,7 @@ var render = function() {
                       }
                     }
                   })
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-md-3" },
-                  [
-                    _c(
-                      "b-button",
-                      {
-                        directives: [
-                          {
-                            name: "b-modal",
-                            rawName: "v-b-modal.modalAddProduct",
-                            modifiers: { modalAddProduct: true }
-                          }
-                        ],
-                        attrs: { variant: "success" },
-                        on: { click: _vm.genCode }
-                      },
-                      [
-                        _c("i", { staticClass: "icon-plus icons" }),
-                        _vm._v("\n              Nuevo Producto\n            ")
-                      ]
-                    )
-                  ],
-                  1
-                )
+                ])
               ]),
               _vm._v(" "),
               _c(
@@ -80305,7 +80340,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var withParams = Object({"MIX_APP_URL":"http://127.0.0.1:8000","MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}).BUILD === 'web' ? __webpack_require__(/*! ./withParamsBrowser */ "./node_modules/vuelidate/lib/withParamsBrowser.js").withParams : __webpack_require__(/*! ./params */ "./node_modules/vuelidate/lib/params.js").withParams;
+var withParams = Object({"MIX_APP_URL":"http://127.0.0.1:8000","MIX_PUSHER_APP_CLUSTER":"mt1","MIX_PUSHER_APP_KEY":"","NODE_ENV":"development"}).BUILD === 'web' ? __webpack_require__(/*! ./withParamsBrowser */ "./node_modules/vuelidate/lib/withParamsBrowser.js").withParams : __webpack_require__(/*! ./params */ "./node_modules/vuelidate/lib/params.js").withParams;
 var _default = withParams;
 exports.default = _default;
 
@@ -80478,12 +80513,10 @@ var app = new Vue({
       localStorage.setItem("bolEmision", bolEmision);
     }).catch(function (err) {
       return console.log(err);
-    });
-    axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/txtcab/F001-0000001').then(function (result) {
-      console.log(result.data);
-    }).catch(function (err) {
-      return console.log(err);
-    });
+    }); // Axios.get('/txtcab/F001-0000001').then(result => {
+    //     console.log(result.data);
+    // })
+    // .catch(err => console.log(err));
   }
 });
 
@@ -81600,8 +81633,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /mnt/d/Code/gestion_facturation/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /mnt/d/Code/gestion_facturation/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\gestion_facturation\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\gestion_facturation\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

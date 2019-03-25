@@ -34,10 +34,6 @@ Route::middleware('auth')->group(function() {
     Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
 
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
-
-    Route::get('/test', function() {
-        return base_path().'logos/logo-1.png';
-    });
     
 });
 

@@ -27,12 +27,12 @@
                 placeholder="Buscar producto...!"
               >
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <b-button v-b-modal.modalAddProduct @click="genCode" variant="success">
                 <i class="icon-plus icons"></i>
                 Nuevo Producto
               </b-button>
-            </div>
+            </div>-->
           </div>
           <table class="table table-hover table-responsive">
             <thead>

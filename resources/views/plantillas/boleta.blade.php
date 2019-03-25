@@ -175,6 +175,9 @@
                 <td colspan="2" class="text-right">TOTAL A PAGAR: S/</td>
                 <td class="text-right">{{$comprobante['total']}}</td>
             </tr>
+            <tr>
+                <td colspan="6">{{$total_string}}</td>
+            </tr>
         </tbody>
     </table>
 </body>

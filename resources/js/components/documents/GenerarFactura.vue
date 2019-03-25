@@ -336,6 +336,9 @@ export default {
         .then(result => {
           console.log(result);
           this.$children[4].url = result.data;
+          this.$children[4].num_comprobante = `${this.num_serie}-${
+            this.num_emision
+          }`;
           this.$root.$emit("bv::show::modal", "modalComprobante");
           this.resetField();
         })

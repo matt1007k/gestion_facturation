@@ -15,6 +15,7 @@ class CreateDetallesTable extends Migration
     {
         Schema::create('detalles', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('codigo', 20);
             $table->decimal('cantidad', 8, 2);
             $table->string('nombre', 100);
             $table->string('descripcion', 200);
