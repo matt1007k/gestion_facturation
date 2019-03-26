@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Venta extends Model
 {
@@ -25,5 +26,11 @@ class Venta extends Model
 
     public function user(){
         return $this->belongsTo('App\User');
+    }
+
+    public function scopeComprobante($query, $tipo){
+        if ($tipo)
+            return $query->where('user_id', Auth::id())
+                            ->where('tipo', $tipo);
     }
 }

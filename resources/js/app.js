@@ -17,11 +17,16 @@ import Vuelidate from "vuelidate";
 import VueSnackbar from "vue-snack";
 import Axios from "axios";
 
+import VueChartkick from "vue-chartkick";
+import Chart from "chart.js";
+
 Vue.use(BootstrapVue);
 Vue.use(Vuelidate);
 Vue.use(VueSnackbar, {
     position: "bottom-right"
 });
+
+Vue.use(VueChartkick, { adapter: Chart });
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -57,6 +62,9 @@ Vue.component(
     "profile-view",
     require("./components/auth/ProfileView.vue").default
 );
+
+Vue.component("dashboard", require("./components/home/Dashboard.vue").default);
+
 const auth =
     document.querySelector("meta[name='user']").getAttribute("content") || {};
 window.Auth = JSON.parse(auth);

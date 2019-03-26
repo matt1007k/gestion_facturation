@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 use App\Venta;
+use App\Client;
+use App\Product;
+use App\Detalle;
 
 class HomeController extends Controller
 {
@@ -34,6 +39,57 @@ class HomeController extends Controller
         return response()->json([
             'totalFacturas' => count($totalFacturas),
             'totalBoletas' => count($totalBoletas)
+        ], 200);
+    }
+
+    public function getCounts()
+    {
+        $products = Product::where('user_id', Auth::id())->get();
+        $sales = Venta::where('user_id', Auth::id())->get();
+        $clients = Client::where('user_id', Auth::id())->get();
+        $prodSales = Detalle::sum('cantidad');
+
+        return response()->json([
+            'totalProducts' => count($products),
+            'totalSales' => count($sales),
+            'totalClients' => count($clients),
+            'totalProdSales' => (int)$prodSales
+        ], 200);
+    }
+
+    public function getVentas(Request $request){
+        $sales = Venta::where('user_id', Auth::id())->get(['total', 'created_at']);
+        $facturas = Venta::comprobante('FA')->get(['total', 'created_at', 'fecha_emision']);
+        $boletas =  Venta::comprobante('BO')->get(['total', 'created_at', 'fecha_emision']);
+        $ventas = array();
+        $documentos = array();
+        $bol = array();
+
+        // Formato de ventas
+        foreach ($sales as $venta) {
+            $fecha_emision = Carbon::parse($venta->created_at)->format('Y-m-d h:i:s T');
+            array_push($ventas ,['fecha' => $fecha_emision, 'total' => $venta->total]);
+        }
+
+        // foreach ($sales as $venta) {
+        //     $fecha_emision = Carbon::parse($venta->created_at)->format('Y-m-d h:i:s T');
+        //     array_push($documents ,['fecha' => $fecha_emision, 'total' => $venta->total]);
+        // }
+
+        foreach ($facturas as $factura) {
+            $fecha_emision = Carbon::parse($factura->created_at)->format('Y-m-d h:i:s T');
+            
+            array_push($documentos ,['name' => 'Facturas', 'data' => [$factura->fecha_emision =>  (int)$factura->total]]);
+        }
+        foreach ($boletas as $boleta) {
+            $fecha_emision = Carbon::parse($boleta->created_at)->format('Y-m-d h:i:s T');
+            
+            array_push($documentos ,['name' => 'Boletas', 'data' => [$boleta->fecha_emision =>  (int)$boleta->total]]);
+        }
+
+        return response()->json([
+            'sales' => $ventas,
+            'documentos' => $documentos
         ], 200);
     }
 }

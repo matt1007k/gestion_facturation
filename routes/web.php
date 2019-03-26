@@ -9,6 +9,9 @@ Auth::routes();
 
 Route::middleware('auth')->group(function() {
     Route::get('/home', 'HomeController@index')->name('home');
+    Route::get('/getCounts', 'HomeController@getCounts')->name('getCounts');
+    Route::get('/getVentas', 'HomeController@getVentas')->name('getVentas');
+
     Route::get('/getCodes', 'HomeController@getCodes')->name('getCodes');
 
     Route::get('/productos', 'Admin\ProductsController@index')->name('productos.index'); 

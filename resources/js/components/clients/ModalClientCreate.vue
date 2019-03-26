@@ -12,7 +12,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
-            <label for="nombre">Nombre: </label>
+            <label for="nombre">Nombre:</label>
             <input
               class="form-control"
               id="nombre"
@@ -33,7 +33,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
-            <label for="tipo_doc">Tipo de documento: </label>
+            <label for="tipo_doc">Tipo de documento:</label>
             <b-form-select
               v-model.trim="$v.tipo_doc.$model"
               :options="options"
@@ -107,6 +107,7 @@ export default {
   methods: {
     hideModal() {
       this.$root.$emit("bv::hide::modal", "modalClientCreate");
+      this.$v.$reset();
       this.nombre = null;
       this.tipo_doc = null;
       this.num_doc = null;
@@ -143,8 +144,9 @@ export default {
           console.log(result);
         }
       }
-    }, 
-    cleanField(){
+    },
+    cleanField() {
+      this.$v.$reset();
       this.nombre = null;
       this.tipo_doc = null;
       this.num_doc = null;
