@@ -168,21 +168,32 @@
             
             <tr class="text-bold">
                 <td colspan="3"></td>                                   
-                <td colspan="2" class="text-right">Subtotal: S/</td>
+                <td colspan="2" class="text-right">OP. GRAVADAS: PEN</td>
                 <td class="text-right">{{$comprobante['subtotal']}}</td>
             </tr>
             <tr class="text-bold">
                 <td colspan="3"></td>                                   
-                <td colspan="2" class="text-right">IGV: S/</td>
+                <td colspan="2" class="text-right">IGV: PEN</td>
                 <td class="text-right">{{$comprobante['igv']}}</td>
             </tr>
             <tr class="text-bold">
                 <td colspan="3"></td>                                   
-                <td colspan="2" class="text-right">TOTAL A PAGAR: S/</td>
+                <td colspan="2" class="text-right">TOTAL A PAGAR: PEN</td>
                 <td class="text-right">{{$comprobante['total']}}</td>
             </tr>
             <tr>
-                <td colspan="6">{{$total_string}}</td>
+                <td colspan="3">Son: {{$total_string}}</td>
+               
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2" class="text-right">
+                    <img style="width: 150px; height: 150px;" src="{{base_path().'/storage/app/public/files/'.$comprobante['num_comprobante'].'.png'}}" alt="Qr code"/>
+                </td>
+            </tr>
+            <tr class="firma">
+                <td colspan="3"></td>
+                <td colspan="3">Hash: {{$firma_hash}}</td>
             </tr>
         </tbody>
     </table>

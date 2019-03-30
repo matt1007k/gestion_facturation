@@ -59,27 +59,105 @@ class VentasController extends Controller
     public function pdf($num_comprobante)
     {
         $tipo = "FACTURA ELECTRÓNICA";
+        $tipoC = "";
         $pdf = "";
         $empresa = User::findOrFail(Auth::id());
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
         // dd($empresa['logo']);
         // dd(public_path());
         // dd(base_path().$empresa['logo']);
+        $urlSF = 'D:/SFS_v1.2/';
+        $name_comprobant = "";
 
-        $convertirString = new ConvertNumToLetter();
-        $total_string = $convertirString->convertir($comprobante->total);
-        
         if($comprobante->tipo === 'FA'){
             $tipo = "FACTURA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
-        }elseif ($comprobante->tipo === 'BO') {
-            $tipo = "BOLETA DE VENTA ELECTRÓNICA";
-            $pdf = PDF::loadView('plantillas.boleta', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa, 'total_string' => $total_string]);
+            $tipoC = "01";
+            $name_comprobant = $empresa->ruc."-".$tipoC."-".$num_comprobante;
         }
-        //$pdf->setPaper('a4', 'landscape');
-        return $pdf->stream();
-        // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+        elseif($comprobante->tipo === 'BO') {
+            $tipo = "BOLETA DE VENTA ELECTRÓNICA";
+            $tipoC = "03";
+            $name_comprobant = $empresa->ruc."-".$tipoC."-".$num_comprobante;
+        }
+
+        $file_R = $urlSF."sunat_archivos/sfs/RPTA/R".$name_comprobant.".zip";
+        $file_E = $urlSF."sunat_archivos/sfs/ENVIO/".$name_comprobant.".zip";
+
+        $rxml = $urlSF."sunat_archivos/sfs/RPTA/R-".$name_comprobant.".xml";
+        $exml = $urlSF."sunat_archivos/sfs/ENVIO/".$name_comprobant.".xml";
+        
+        // get the absolute path to $file
+        $path_R = pathinfo(realpath($file_R), PATHINFO_DIRNAME);
+        $path_E = pathinfo(realpath($file_E), PATHINFO_DIRNAME);
+
+        $zip_R = new \ZipArchive;
+        $res_R = $zip_R->open($file_R);
+
+        $zip_E = new \ZipArchive;
+        $res_E = $zip_E->open($file_E);
+        if ($res_R === TRUE) {
+            // extract it to the path we determined above
+            $zip_R->extractTo($path_R);
+            $zip_E->extractTo($path_E);
+            $zip_R->close();
+            $zip_E->close();
+
+            $archivo_res = file_get_contents($rxml);
+            $res_xml = new \SimpleXMLElement($archivo_res);
+            $estado = $res_xml->xpath('//cbc:Description');
+    
+            $archivo_env = file_get_contents($exml);
+            $env_xml = new \SimpleXMLElement($archivo_env);
+            $firma = $env_xml->xpath('//ds:DigestValue');
+            $firma_hash = $firma[0][0];
+            $arrayNum = explode('-', $num_comprobante);
+            $serie = $arrayNum[0];
+            $numS = $arrayNum[1];
+            
+            $convertirString = new ConvertNumToLetter();
+            $total_string = $convertirString->convertir($comprobante->total);
+            
+            if($comprobante->tipo === 'FA'){
+                
+                
+                // Generamos el code QR
+                $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||99999999|$firma_hash";
+                \QrCode::format('png')->size(300)->generate($qr_text, $url);
+    
+                $pdf = PDF::loadView('plantillas.factura', [
+                    'comprobante' => $comprobante, 'tipo' => $tipo, 
+                    'empresa' => $empresa, 'total_string' => $total_string,
+                    'firma_hash' => $firma_hash
+                ]);
+            }elseif ($comprobante->tipo === 'BO') {
+                
+                // Generamos el code QR
+                $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||99999999|$firma_hash";
+                \QrCode::format('png')->size(300)->generate($qr_text, $url);
+    
+                $pdf = PDF::loadView('plantillas.boleta', [
+                    'comprobante' => $comprobante, 'tipo' => $tipo, 
+                    'empresa' => $empresa, 'total_string' => $total_string,
+                    'firma_hash' => $firma_hash
+                ]);
+            }
+            //$pdf->setPaper('a4', 'landscape');
+            return $pdf->stream();
+            // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            
+        } else {
+            return response()->json([
+                'message' => 'No has enviado el comprobante a la sunat'
+            ], 500);
+        }
+ 
     }
+
+    public function generateQR(){
+        
+    } 
 
     public function descargar($num_comprobante)
     {
@@ -110,7 +188,9 @@ class VentasController extends Controller
 
     public function descargartxt($num_comprobante){
 
-        $folder_generate = "D:/Code/DATA/";
+        // D:/SFS_v1.2/sunat_archivos/sfs/DATA/
+        // D:/Code/DATA/
+        $folder_generate = "D:/SFS_v1.2/sunat_archivos/sfs/DATA/";
 
         $tipo = "FACTURA ELECTRÓNICA";
         $num_tipo = "";
@@ -138,7 +218,7 @@ class VentasController extends Controller
             // DETALLE VENTA
             foreach ($comprobante->details as $detalle) {
                 $cantidad = (int)$detalle->cantidad;
-                $igv = $detalle->subtotal * 0.18;
+                $igv = number_format($detalle->subtotal * 0.18, 2);
                 $precioUntIgv = $detalle->subtotal + $igv;
                 $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
             }
@@ -159,7 +239,7 @@ class VentasController extends Controller
             // DETALLE VENTA
             foreach ($comprobante->details as $detalle) {
                 $cantidad = (int)$detalle->cantidad;
-                $igv = $detalle->subtotal * 0.18;
+                $igv = number_format($detalle->subtotal * 0.18, 2);
                 $precioUntIgv = $detalle->subtotal + $igv;
                 $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
             }

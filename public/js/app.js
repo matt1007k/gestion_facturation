@@ -2517,11 +2517,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   methods: {
     hideModal: function hideModal() {
       this.$root.$emit("bv::hide::modal", "modalClientCreate");
-      this.$v.$reset();
-      this.nombre = null;
-      this.tipo_doc = null;
-      this.num_doc = null;
-      this.direccion = null;
+      this.cleanField();
     },
     handleSubmit: function () {
       var _handleSubmit = _asyncToGenerator(
@@ -2940,6 +2936,33 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
@@ -2963,14 +2986,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     getSales: function () {
       var _getSales = _asyncToGenerator(
       /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(page) {
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(page, tipo) {
         var result;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios.get("/getSales?page=".concat(page));
+                return axios.get("/getSales?page=".concat(page, "&tipo=").concat(tipo));
 
               case 2:
                 result = _context.sent;
@@ -2991,7 +3014,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee, this);
       }));
 
-      function getSales(_x) {
+      function getSales(_x, _x2) {
         return _getSales.apply(this, arguments);
       }
 
@@ -3027,11 +3050,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     imprimirPDF: function imprimirPDF(num_comprobante) {
+      var _this2 = this;
+
       if (!num_comprobante) {
         return;
       }
 
-      return location.href = "/comprobante/".concat(num_comprobante);
+      axios.get("/comprobante/".concat(num_comprobante)).then(function (result) {
+        return location.href = "/comprobante/".concat(num_comprobante);
+
+        _this2.$snack.success(config);
+      }).catch(function (err) {
+        var config = {
+          text: err.response.data.message,
+          button: "ok"
+        };
+
+        _this2.$snack.danger(config);
+
+        console.log(err.response);
+      });
     } // eliminarSale(id){
     //     swal({
     //         title: "Estas seguro de eliminar?",
@@ -3063,10 +3101,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   computed: {
     searchOnSales: function searchOnSales() {
-      var _this2 = this;
+      var _this3 = this;
 
       return this.sales.filter(function (item) {
-        return item.nombre.toLowerCase().includes(_this2.name.toLowerCase());
+        return item.nombre.toLowerCase().includes(_this3.name.toLowerCase()) || item.tipo.toLowerCase().includes(_this3.name.toLowerCase()) || item.num_doc.toLowerCase().includes(_this3.name.toLowerCase());
       });
     },
     isActivedPage: function isActivedPage() {
@@ -3131,6 +3169,7 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+//
 //
 //
 //
@@ -4821,6 +4860,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   methods: {
     hideModal: function hideModal() {
       this.$root.$emit("bv::hide::modal", "modalPrevent");
+      this.cleanField();
     },
     handleSubmit: function () {
       var _handleSubmit = _asyncToGenerator(
@@ -4893,6 +4933,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return handleSubmit;
     }(),
     cleanField: function cleanField() {
+      this.$v.$reset();
       this.name = "";
       this.description = "";
       this.price = 0.0;
@@ -98554,7 +98595,7 @@ var render = function() {
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "card-body" }, [
-      _c("div", { staticClass: "row mb-3" }, [
+      _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-md-8" }, [
           _vm._v("Ver: " + _vm._s(_vm.pagination.total) + " en total")
         ]),
@@ -98570,7 +98611,10 @@ var render = function() {
               }
             ],
             staticClass: "form-control",
-            attrs: { type: "text", placeholder: "Buscar cliente...!" },
+            attrs: {
+              type: "text",
+              placeholder: "Buscar cliente o comprobante...!"
+            },
             domProps: { value: _vm.name },
             on: {
               input: function($event) {
@@ -98631,20 +98675,18 @@ var render = function() {
                         _c(
                           "b-button",
                           {
-                            attrs: { variant: "primary", size: "sm" },
-                            on: {
-                              click: function($event) {
-                                return _vm.downloadPDF(sale.num_comprobante)
+                            directives: [
+                              {
+                                name: "b-tooltip",
+                                rawName: "v-b-tooltip.hover",
+                                modifiers: { hover: true }
                               }
-                            }
-                          },
-                          [_c("span", [_vm._v("PDF")])]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "b-button",
-                          {
-                            attrs: { variant: "info", size: "sm" },
+                            ],
+                            attrs: {
+                              variant: "info",
+                              title: "Generar archivos",
+                              size: "sm"
+                            },
                             on: {
                               click: function($event) {
                                 return _vm.downloadTXT(sale.num_comprobante)
@@ -98657,7 +98699,18 @@ var render = function() {
                         _c(
                           "b-button",
                           {
-                            attrs: { variant: "success", size: "sm" },
+                            directives: [
+                              {
+                                name: "b-tooltip",
+                                rawName: "v-b-tooltip.hover",
+                                modifiers: { hover: true }
+                              }
+                            ],
+                            attrs: {
+                              variant: "success",
+                              title: "Imprimir comprobante",
+                              size: "sm"
+                            },
                             on: {
                               click: function($event) {
                                 return _vm.imprimirPDF(sale.num_comprobante)
@@ -98791,7 +98844,7 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Total")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Descargar")])
+      _c("th", [_vm._v("Acción")])
     ])
   }
 ]
@@ -98821,6 +98874,10 @@ var render = function() {
       _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
+        _c("p", { staticClass: "text-danger" }, [
+          _vm._v("Estos campos son obligatorios (*)")
+        ]),
+        _vm._v(" "),
         _c(
           "form",
           {
@@ -98834,10 +98891,6 @@ var render = function() {
           [
             _c("div", { staticClass: "row mb-3" }, [
               _c("div", { staticClass: "col-md-3" }, [
-                _c("p", { staticClass: "text-danger" }, [
-                  _vm._v("Estos campos son obligatorios (*)")
-                ]),
-                _vm._v(" "),
                 _c("label", { attrs: { for: "fecha" } }, [
                   _vm._v("Tipo de comprobante (*)")
                 ]),
@@ -99030,7 +99083,11 @@ var render = function() {
                     _vm._v(" "),
                     _c("b-form-select", {
                       class: { "is-invalid": _vm.errors.tipo_doc },
-                      attrs: { id: "tipo", options: _vm.options_tipos_doc },
+                      attrs: {
+                        disabled: "",
+                        id: "tipo",
+                        options: _vm.options_tipos_doc
+                      },
                       model: {
                         value: _vm.tipo_doc,
                         callback: function($$v) {

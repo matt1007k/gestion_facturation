@@ -8,12 +8,27 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row mb-3">
+      <div class="row">
         <div class="col-md-8">Ver: {{pagination.total}} en total</div>
         <div class="col-md justify-content-end">
-          <input type="text" class="form-control" v-model="name" placeholder="Buscar cliente...!">
+          <input
+            type="text"
+            class="form-control"
+            v-model="name"
+            placeholder="Buscar cliente o comprobante...!"
+          >
         </div>
       </div>
+      <!-- <div class="row mb-3">
+        <div class="col-md-3">
+          Ordenar por:
+          <select @change="filterSale($event, '')" class="form-control">
+            <option value>Seleccionar</option>
+            <option value="FA">Facturas</option>
+            <option value="BO">Boletas</option>
+          </select>
+        </div>
+      </div>-->
       <table class="table table-hover table-responsive">
         <thead>
           <th>#</th>
@@ -23,7 +38,7 @@
           <th>Tipo</th>
           <th>Igv</th>
           <th>Total</th>
-          <th>Descargar</th>
+          <th>Acción</th>
         </thead>
         <tbody>
           <template v-if="searchOnSales.length > 0">
@@ -39,13 +54,25 @@
               <td>{{sale.igv}}</td>
               <td>{{sale.total}}</td>
               <td>
-                <b-button variant="primary" size="sm" @click="downloadPDF(sale.num_comprobante)">
+                <!-- <b-button variant="primary" size="sm" @click="downloadPDF(sale.num_comprobante)">
                   <span>PDF</span>
-                </b-button>
-                <b-button variant="info" size="sm" @click="downloadTXT(sale.num_comprobante)">
+                </b-button>-->
+                <b-button
+                  variant="info"
+                  v-b-tooltip.hover
+                  title="Generar archivos"
+                  size="sm"
+                  @click="downloadTXT(sale.num_comprobante)"
+                >
                   <span>TXT</span>
                 </b-button>
-                <b-button variant="success" size="sm" @click="imprimirPDF(sale.num_comprobante)">
+                <b-button
+                  variant="success"
+                  v-b-tooltip.hover
+                  title="Imprimir comprobante"
+                  size="sm"
+                  @click="imprimirPDF(sale.num_comprobante)"
+                >
                   <i class="icon-printer icons"></i>
                 </b-button>
               </td>
@@ -111,8 +138,8 @@ export default {
     };
   },
   methods: {
-    async getSales(page) {
-      let result = await axios.get(`/getSales?page=${page}`);
+    async getSales(page, tipo) {
+      let result = await axios.get(`/getSales?page=${page}&tipo=${tipo}`);
       if (result) {
         console.log(result);
         this.sales = result.data.sales.data;
@@ -151,7 +178,21 @@ export default {
       if (!num_comprobante) {
         return;
       }
-      return (location.href = `/comprobante/${num_comprobante}`);
+
+      axios
+        .get(`/comprobante/${num_comprobante}`)
+        .then(result => {
+          return (location.href = `/comprobante/${num_comprobante}`);
+          this.$snack.success(config);
+        })
+        .catch(err => {
+          let config = {
+            text: err.response.data.message,
+            button: "ok"
+          };
+          this.$snack.danger(config);
+          console.log(err.response);
+        });
     }
     // eliminarSale(id){
     //     swal({
@@ -187,7 +228,11 @@ export default {
   computed: {
     searchOnSales() {
       return this.sales.filter(item => {
-        return item.nombre.toLowerCase().includes(this.name.toLowerCase());
+        return (
+          item.nombre.toLowerCase().includes(this.name.toLowerCase()) ||
+          item.tipo.toLowerCase().includes(this.name.toLowerCase()) ||
+          item.num_doc.toLowerCase().includes(this.name.toLowerCase())
+        );
       });
     },
     isActivedPage() {

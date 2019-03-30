@@ -107,11 +107,7 @@ export default {
   methods: {
     hideModal() {
       this.$root.$emit("bv::hide::modal", "modalClientCreate");
-      this.$v.$reset();
-      this.nombre = null;
-      this.tipo_doc = null;
-      this.num_doc = null;
-      this.direccion = null;
+      this.cleanField();
     },
     async handleSubmit() {
       console.log("submit!");

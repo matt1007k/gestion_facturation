@@ -5,10 +5,10 @@
         <h4>Generar Factura Electrónica</h4>
       </div>
       <div class="card-body">
+        <p class="text-danger">Estos campos son obligatorios (*)</p>
         <form @submit.prevent="generarDoc">
           <div class="row mb-3">
             <div class="col-md-3">
-              <p class="text-danger">Estos campos son obligatorios (*)</p>
               <label for="fecha">Tipo de comprobante (*)</label>
               <select
                 v-model="tipo"
@@ -75,6 +75,7 @@
               <div class="form-group">
                 <label for="tipo">Tipo de documento (*)</label>
                 <b-form-select
+                  disabled
                   v-model="tipo_doc"
                   id="tipo"
                   :class="{'is-invalid': errors.tipo_doc}"

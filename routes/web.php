@@ -37,6 +37,32 @@ Route::middleware('auth')->group(function() {
     Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
 
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
+
+    Route::get('/json', function(){
+        $rxml = "D:/Code/RES/R11069415177-03-B001-0000005/R-11069415177-03-B001-0000005.xml";
+        $exml = "D:/Code/RES/11069415177-03-B001-0000005.xml";
+        // $fxml = "D:/Code/RES/01.xml";
+        // 20505155151|03|B001|3|2.29|15.00|2019-03-24||99999999|wpnaX5tySXgpe8rGQEdx6tIJmqo=
+
+        $archivo_res = file_get_contents($rxml);
+        $res_xml = new SimpleXMLElement($archivo_res);
+        $estado[0] = $res_xml->xpath('//cbc:Description');
+
+        $archivo_env = file_get_contents($exml);
+        $env_xml = new SimpleXMLElement($archivo_env);
+        $firma[0] = $env_xml->xpath('//ds:DigestValue');
+        $firma_hash = '';
+        foreach($firma[0] as $value){
+            $firma_hash =  $value;
+        }
+        $url = base_path().'/storage/app/public/files/B001-0000005.png';
+        // $result = QrCode::format('png')->size(300)->generate('Make me into a QrCode!', $url);
+        if(file_exists($url)){
+            echo "yes";
+        }else{
+            echo 'no';
+        }
+        // echo "QR Generated: $result";
+    });
     
 });
-

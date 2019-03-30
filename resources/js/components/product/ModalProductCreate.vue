@@ -139,6 +139,7 @@ export default {
   methods: {
     hideModal() {
       this.$root.$emit("bv::hide::modal", "modalPrevent");
+      this.cleanField();
     },
     async handleSubmit() {
       console.log("submit!");
@@ -175,6 +176,7 @@ export default {
       }
     },
     cleanField(){
+      this.$v.$reset();
       this.name = "";
       this.description = "";
       this.price = 0.0;
