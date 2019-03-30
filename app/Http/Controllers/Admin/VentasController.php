@@ -66,7 +66,7 @@ class VentasController extends Controller
         // dd($empresa['logo']);
         // dd(public_path());
         // dd(base_path().$empresa['logo']);
-        $urlSF = 'D:/SFS_v1.2/';
+        $urlSF = Auth::user()->setting['sfs_url'];
         $name_comprobant = "";
 
         if($comprobante->tipo === 'FA'){
@@ -190,7 +190,8 @@ class VentasController extends Controller
 
         // D:/SFS_v1.2/sunat_archivos/sfs/DATA/
         // D:/Code/DATA/
-        $folder_generate = "D:/SFS_v1.2/sunat_archivos/sfs/DATA/";
+        $urlSF = Auth::user()->setting['sfs_url'];
+        $folder_generate = $urlSF."sunat_archivos/sfs/DATA/";
 
         $tipo = "FACTURA ELECTRÓNICA";
         $num_tipo = "";
@@ -213,7 +214,7 @@ class VentasController extends Controller
             $num_tipo = "01";
             $tipo_doc = "RUC";
             // CABECERA
-            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|6|$comprobante->ruc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|6|$comprobante->num_doc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";
             
             // DETALLE VENTA
             foreach ($comprobante->details as $detalle) {
@@ -234,7 +235,7 @@ class VentasController extends Controller
             $tipo = "BOLETA DE VENTA ELECTRÓNICA";
             $num_tipo = "03"; 
             $tipo_doc = "DNI";   
-            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|1|$comprobante->ruc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";        
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|-|000|1|$comprobante->num_doc|$comprobante->nombre|PEN|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";        
         
             // DETALLE VENTA
             foreach ($comprobante->details as $detalle) {

@@ -63,6 +63,11 @@ Vue.component(
     require("./components/auth/ProfileView.vue").default
 );
 
+Vue.component(
+    "form-setting",
+    require("./components/auth/FormSetting.vue").default
+);
+
 Vue.component("dashboard", require("./components/home/Dashboard.vue").default);
 
 const auth =

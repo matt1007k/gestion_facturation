@@ -36,4 +36,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     Route::put('/clientes/{cliente}', 'Admin\ClientsController@update')->name('clientes.update');
     Route::delete('/clientes/{cliente}', 'Admin\ClientsController@destroy')->name('clientes.destroy');
 
+    Route::put('/configuraciones/{setting}', 'Admin\SettingsController@update')->name('configuraciones.update');
+
 

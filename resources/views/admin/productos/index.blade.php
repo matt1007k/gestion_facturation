@@ -15,8 +15,6 @@
         </a>
         <a class="btn" href=" {{route('home')}} ">
           <i class="icon-graph"></i>  Dashboard</a>
-        <a class="btn" href="#">
-          <i class="icon-settings"></i>  Settings</a>
       </div>
     </li>
 </ol>

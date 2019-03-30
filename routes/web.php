@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
 
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
+    Route::get('/configuraciones', 'Admin\SettingsController@setting')->name('setting');
 
     Route::get('/json', function(){
         $rxml = "D:/Code/RES/R11069415177-03-B001-0000005/R-11069415177-03-B001-0000005.xml";

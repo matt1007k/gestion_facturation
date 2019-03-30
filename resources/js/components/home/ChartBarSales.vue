@@ -4,22 +4,20 @@
       <div class="card">
         <h5 class="card-header text-white bg-primary">Ventas realizadas</h5>
         <div class="card-body">
-          <b-tabs content-class="mt-3">
-            <b-tab title="Ventas" active>
-              <line-chart
-                :refresh="60"
-                :legend="true"
-                :data="ventas"
-                :messages="{empty: 'No hay ventas'}"
-                xtitle="Fecha de venta"
-                ytitle="Cantidad de ventas"
-                :dataset="{label: 'Cantidad de ventas realizadas'}"
-                :animation="easeOut"
-              ></line-chart>
-            </b-tab>
+          <!-- <b-tabs content-class="mt-3">
+          <b-tab title="Ventas" active>-->
+          <line-chart
+            prefix="S/."
+            :legend="true"
+            :data="ventas"
+            :messages="{empty: 'No hay ventas'}"
+            xtitle="Fecha de venta"
+            ytitle="Total de ventas"
+            :dataset="{label: 'Total por ventas realizadas'}"
+          ></line-chart>
+          <!-- </b-tab>
             <b-tab title="Documentos">
               <column-chart
-                :refresh="60"
                 prefix="S/."
                 :data="documents"
                 :messages="{empty: 'No hay ventas'}"
@@ -28,7 +26,7 @@
                 :colors="['#f44242', '#419bf4']"
               ></column-chart>
             </b-tab>
-          </b-tabs>
+          </b-tabs>-->
         </div>
       </div>
     </div>

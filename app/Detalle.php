@@ -17,6 +17,6 @@ class Detalle extends Model
         'subtotal'
     ];
     public function venta(){
-        return $this->belongsTo('App\Detalle');
+        return $this->belongsTo('App\Venta');
     }
 }

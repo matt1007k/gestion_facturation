@@ -4,7 +4,7 @@
       <div class="card">
         <div class="card-body">
           <div class="h1 text-muted text-right mb-4">
-            <i class="icon-people"></i>
+            <i class="icon-chart"></i>
           </div>
           <div class="text-value">{{totalProducts}}</div>
           <small class="text-muted text-uppercase font-weight-bold">Total de productos</small>

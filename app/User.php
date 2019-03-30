@@ -39,5 +39,10 @@ class User extends Authenticatable
     public function clients(){
         return $this->hasMany('App\client');
     }
+
+    public function setting()
+    {
+        return $this->hasOne('App\Setting');
+    }
     
 }

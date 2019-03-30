@@ -22,9 +22,6 @@
         <li class="nav-item px-3">
             <a class="nav-link" href="{{ route('productos.index') }}">Productos</a>
         </li>
-        <li class="nav-item px-3">
-            <a class="nav-link" href="#">Settings</a>
-        </li>
     </ul>
         <ul class="nav navbar-nav ml-auto">
         <li class="nav-item dropdown d-md-down-none">
@@ -39,21 +36,7 @@
                 <a class="dropdown-item" href="#">
                     <i class="icon-user-follow text-success"></i> New user registered
                 </a>
-                <a class="dropdown-item" href="#">
-                    <i class="icon-user-unfollow text-danger"></i> User deleted
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="icon-chart text-info"></i> Sales report is ready
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="icon-basket-loaded text-primary"></i> New client
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="icon-speedometer text-warning"></i> Server overloaded
-                </a>  
-                <a class="dropdown-item text-center" href="#">
-                    <strong>View all tasks</strong>
-                </a>                  
+                               
             </div>
         </li>
         <li class="nav-item dropdown d-md-down-none">
@@ -75,46 +58,7 @@
                         <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </span>
                 </a>
-                <a class="dropdown-item" href="#">
-                    <div class="small mb-1">ReactJS Version
-                        <span class="float-right">
-                        <strong>25%</strong>
-                    </span>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="small mb-1">VueJS Version
-                        <span class="float-right">
-                        <strong>50%</strong>
-                        </span>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="small mb-1">Add new layouts
-                        <span class="float-right">
-                        <strong>75%</strong>
-                        </span>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                </a>
-                <a class="dropdown-item" href="#">
-                    <div class="small mb-1">Angular 2 Cli Version
-                        <span class="float-right">
-                        <strong>100%</strong>
-                        </span>
-                    </div>
-                    <span class="progress progress-xs">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </span>
-                </a>
+                
                 <a class="dropdown-item text-center" href="#">
                     <strong>View all tasks</strong>
                 </a>
@@ -159,13 +103,13 @@
             </a>
             <div class="dropdown-menu dropdown-menu-right">            
                 <div class="dropdown-header text-center">
-                    <strong>Settings</strong>
+                    <strong>Opciones</strong>
                 </div>
                 <a class="dropdown-item" href="{{ route('perfil') }}">
                     <i class="fa fa-user"></i> Perfil</a>
-                <a class="dropdown-item" href="#">
-                    <i class="fa fa-wrench"></i> Settings</a>
-                <a class="dropdown-item" href="#">
+                {{-- <a class="dropdown-item" href="#" data-toggle="aside-menu-lg-show">
+                    <i class="fa fa-wrench"></i> Configuraciones</a> --}}
+                {{-- <a class="dropdown-item" href="#">
                     <i class="fa fa-usd"></i> Payments
                     <span class="badge badge-dark">42</span>
                 </a>
@@ -175,7 +119,7 @@
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">
-                    <i class="fa fa-shield"></i> Lock Account</a>
+                    <i class="fa fa-shield"></i> Lock Account</a> --}}
                 <a class="dropdown-item" href="{{ route('logout') }}"
                 onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">
