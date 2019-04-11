@@ -2,7 +2,7 @@
 //@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-//@import 'variables';
+@import "variables";
 
 // Bootstrap
 @import "node_modules/@coreui/coreui/scss/coreui";
@@ -27,4 +27,16 @@
 
 .mvisible {
     display: block;
+}
+
+.status-registered {
+    border-left: 10px solid $primary;
+}
+.status-accepted {
+    border-left: 10px solid $success;
+    height: 90%;
+}
+
+.status-canceled {
+    border-left: 10px solid $red;
 }

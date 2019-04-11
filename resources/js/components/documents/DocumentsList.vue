@@ -34,22 +34,38 @@
           <th>#</th>
           <th>Fecha Emision</th>
           <th>Cliente</th>
-          <th>Número</th>
-          <th>Tipo</th>
+          <th>Comprobante</th>
+          <th>Estado</th>
           <th>Igv</th>
           <th>Total</th>
           <th>Acción</th>
         </thead>
         <tbody>
           <template v-if="searchOnSales.length > 0">
-            <tr v-for="(sale, index) in searchOnSales" :key="sale.id">
+            <tr
+              v-for="(sale, index) in searchOnSales"
+              :key="sale.id"
+              :class="StatusClass(sale.estado)"
+            >
               <td>{{index + 1}}</td>
               <td>{{sale.fecha_emision}}</td>
               <td>{{sale.nombre}}, {{sale.tipo_doc}} {{sale.num_doc}}</td>
-              <td>{{sale.num_comprobante}}</td>
               <td>
-                <template v-if="sale.tipo === 'FA'">FACTURA ELECTRÓNICA</template>
-                <template v-else-if="sale.tipo === 'BO'">BOLETA DE VENTA ELECTRÓNICA</template>
+                <template v-if="sale.tipo === 'FA'">{{sale.num_comprobante}}, FACTURA ELECTRÓNICA</template>
+                <template
+                  v-else-if="sale.tipo === 'BO'"
+                >{{sale.num_comprobante}}, BOLETA DE VENTA ELECTRÓNICA</template>
+              </td>
+              <td>
+                <template v-if="sale.estado === 'registered'">
+                  <span class="badge badge-primary">Registrado</span>
+                </template>
+                <template v-else-if="sale.estado === 'accepted'">
+                  <span class="badge badge-success">Aceptado</span>
+                </template>
+                <template v-else-if="sale.estado === 'canceled'">
+                  <span class="badge badge-danger">Anulado</span>
+                </template>
               </td>
               <td>{{sale.igv}}</td>
               <td>{{sale.total}}</td>
@@ -75,6 +91,15 @@
                 >
                   <i class="icon-printer icons"></i>
                 </b-button>
+                <template v-if="sale.estado !== 'canceled'">
+                  <b-button
+                    variant="warning"
+                    v-b-tooltip.hover
+                    title="Generar Nota"
+                    size="sm"
+                    @click="generarNota(sale.num_comprobante)"
+                  >Nota</b-button>
+                </template>
               </td>
             </tr>
           </template>
@@ -193,6 +218,20 @@ export default {
           this.$snack.danger(config);
           console.log(err.response);
         });
+    },
+    generarNota(num_comprobante) {
+      return (location.href = `/documentos/nota/${num_comprobante}`);
+    },
+    StatusClass(status) {
+      if (status === "registered") {
+        return "status-registered";
+      } else if (status === "accepted") {
+        return "status-accepted";
+      } else if (status === "canceled") {
+        return "status-canceled";
+      } else {
+        return "";
+      }
     }
     // eliminarSale(id){
     //     swal({

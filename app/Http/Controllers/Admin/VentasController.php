@@ -50,10 +50,84 @@ class VentasController extends Controller
             'pagination' => $pagination
         ], 200);
     }
-
+   
     public function create()
     {
         return view('admin.ventas.create');
+    }
+
+    public function getTypesOperationNote($type)
+    {
+        
+    }
+
+    public function getDetailsDocument($num_comprobante){
+        $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
+        $detalles = array();
+
+
+        // Formato de ventas
+        foreach ($comprobante->details as $detalle) {
+            $product = Product::where('code', $detalle->codigo)->first();
+            array_push($detalles , [
+                'id' => $product->id,
+                'code' => $detalle->codigo,
+                'name' => $detalle->nombre,
+                'description' => $detalle->descripcion,
+                'img' => $product->img,
+                'price' => $detalle->precio,
+                'quantity' => (int)$detalle->cantidad,
+                'status' => $product->status,
+                'unity' => $product->unity,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'user_id' =>  $product->user_id           
+            ]);
+            
+        }
+
+        $tipos_operacion_nota_credito = array(
+            ['value'=> '01', 'text' => 'Anulación de la operación'],
+            ['value'=> '02', 'text' => 'Anulación por error en el RUC'],
+            ['value'=> '03', 'text' => 'Corrección por error en la descripción'],
+            ['value'=> '04', 'text' => 'Descuento global'],
+            ['value'=> '05', 'text' => 'Descuento por ítem'],
+            ['value'=> '06', 'text' => 'Devolución total'],
+            ['value'=> '07', 'text' => 'Devolución por ítem'],
+            ['value'=> '08', 'text' => 'Bonificación'],
+            ['value'=> '09', 'text' => 'Disminución en el valor'],
+            ['value'=> '10', 'text' => 'Otros Conceptos'],
+            ['value'=> '11', 'text' => 'Ajustes de operaciones de exportación'],
+            ['value'=> '12', 'text' => 'Ajustes afectos al IVAP']
+        );
+
+        $tipos_operacion_nota_debito = array(
+            ['value'=> '01', 'text' => 'Intereses por mora'],
+            ['value'=> '02', 'text' => 'Aumento en el valor'],
+            ['value'=> '03', 'text' => 'Penalidades/ otros conceptos'],
+            ['value'=> '11', 'text' => 'Ajustes de operaciones de exportación'],
+            ['value'=> '12', 'text' => 'Ajustes afectos al IVAP']
+        );
+
+        $tipos = [
+            ['NC', 'Nota de Crédito'], 
+            ['ND','Nota de Débito'] 
+            #'Nota de Credito', 'Nota de Debito'
+        ];
+
+        return response()->json([
+            'comprobante' => $comprobante,
+            'detalles' => $detalles,
+            'tipos' => $tipos,
+            'tipos_credito' => $tipos_operacion_nota_credito,
+            'tipos_debito' => $tipos_operacion_nota_debito
+        ], 200);
+    }
+
+    public function createNota($num_comprobante)
+    {
+        $num_comprobant = (string)$num_comprobante;
+        return view('admin.ventas.notas', ['num_comprobant' => $num_comprobant]);
     }
 
     public function pdf($num_comprobante)
@@ -352,6 +426,43 @@ class VentasController extends Controller
     
     public function generar(GenerarRequest $request)
     {
+        $venta = new Venta();
+        
+        $venta->tipo = $request->tipo;
+        $venta->num_comprobante = $request->num_serie.'-'.$request->num_emision;
+        $venta->fecha_emision = Carbon::parse($request->fecha_emision)->format('Y-m-d');
+        $venta->tipo_doc = $request->tipo_doc;
+        $venta->num_doc = $request->cliente['num_doc'];
+        $venta->nombre = $request->cliente['nombre'];
+        $venta->direccion = $request->cliente['direccion'];
+        $venta->subtotal = $request->subtotal;
+        $venta->igv = $request->igv;
+        $venta->total = $request->subtotal + $request->igv;
+        $venta->user_id = $request->user_id;
+        
+        if($venta->save()){
+            foreach ($request->details as $detalle_venta) { 
+                $detalle = new Detalle(); 
+                $detalle->venta_id = $venta->id;   
+                $detalle->codigo = $detalle_venta['code'];         
+                $detalle->cantidad = $detalle_venta['quantity'];
+                $detalle->nombre = $detalle_venta['name'];
+                $detalle->descripcion = $detalle_venta['description'];
+                $detalle->precio = $detalle_venta['price'];
+                $detalle->descuento = 0.00;
+                $detalle->unidad = $detalle_venta['unity'];
+                $detalle->subtotal = $detalle_venta['price'] * $detalle_venta['quantity'];
+                $detalle->save();
+            }
+
+
+            return route('pdf', ['num_comprobante'=> $venta->num_comprobante]);
+        }
+    }
+
+    public function generarNota(Request $request)
+    {
+        return $request;
         $venta = new Venta();
         
         $venta->tipo = $request->tipo;

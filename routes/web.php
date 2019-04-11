@@ -21,7 +21,9 @@ Route::middleware('auth')->group(function() {
     Route::get('/documentos', 'Admin\VentasController@index')->name('documentos.index');
     Route::get('/documentos/create', 'Admin\VentasController@create')->name('documentos.create');
     Route::get('/getSales', 'Admin\VentasController@getSales')->name('getSales');
-
+    
+    Route::get('/documentos/nota/{num_comprobante}', 'Admin\VentasController@createNota')->name('documentos.nota');
+    Route::get('/getDetailsDocument/{num_comprobante}', 'Admin\VentasController@getDetailsDocument')->name('getDetailsDocument');
 
     Route::get('/clientes', 'Admin\ClientsController@index')->name('clientes.index');
     Route::get('/getClients', 'Admin\ClientsController@getClients')->name('getClients');
@@ -33,11 +35,17 @@ Route::middleware('auth')->group(function() {
     Route::get('/descargar/{num_comprobante}', 'Admin\VentasController@descargar')->name('descargar');
     // Route::get('/boletas/{num_comprobante}', 'Admin\VentasController@pdf')->name('boletas');
     Route::get('/txt/{num_comprobante}', 'Admin\VentasController@descargartxt')->name('txt');
+    // Notas de credito
+    Route::post('/notas', 'Admin\VentasController@generarNota')->name('notas.generar');
+    Route::get('/nota-pdf/{num_comprobante}', 'Admin\VentasController@notaPDF')->name('notas.pdf');
 
     Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
 
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
     Route::get('/configuraciones', 'Admin\SettingsController@setting')->name('setting');
+
+    Route::get('/reportes', 'Admin\ReportsController@index')->name('reportes.index');
+    Route::get('/generar-reporte', 'Admin\ReportsController@create')->name('reportes.create');
 
     Route::get('/json', function(){
         $rxml = "D:/Code/RES/R11069415177-03-B001-0000005/R-11069415177-03-B001-0000005.xml";

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class Venta extends Model
 {
     protected $filable = [
+        'estado',
         'tipo',               
         'num_comprobante',   
         'fecha_emision',

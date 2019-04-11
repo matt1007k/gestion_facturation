@@ -68,6 +68,11 @@ Vue.component(
     require("./components/auth/FormSetting.vue").default
 );
 
+Vue.component(
+    "generar-nota",
+    require("./components/documents/notes/GenerarNota.vue").default
+);
+
 Vue.component("dashboard", require("./components/home/Dashboard.vue").default);
 
 const auth =
@@ -79,12 +84,23 @@ const app = new Vue({
     created() {
         Axios.get("/getCodes")
             .then(result => {
-                let facEmision = `000000${result.data.totalFacturas + 1}`;
-                let bolEmision = `000000${result.data.totalBoletas + 1}`;
+                let facEmision = `0000000${result.data.totalFacturas + 1}`;
+                let bolEmision = `0000000${result.data.totalBoletas + 1}`;
+
+                let NotaCreditoEmision = `0000000${result.data
+                    .totalNotaCredito + 1}`;
+                let NotaDebitoEmision = `0000000${result.data.totalNotaDebito +
+                    1}`;
+
                 localStorage.setItem("facSerie", "F001");
                 localStorage.setItem("facEmision", facEmision);
                 localStorage.setItem("bolSerie", "B001");
                 localStorage.setItem("bolEmision", bolEmision);
+
+                localStorage.setItem("NCSerie", "BC01");
+                localStorage.setItem("NCEmision", NotaCreditoEmision);
+                localStorage.setItem("NDSerie", "BD01");
+                localStorage.setItem("NDEmision", NotaDebitoEmision);
             })
             .catch(err => console.log(err));
 

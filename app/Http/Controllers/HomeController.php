@@ -36,9 +36,14 @@ class HomeController extends Controller
         $totalFacturas = Venta::where('tipo', 'FA')->get();
         $totalBoletas = Venta::where('tipo', 'BO')->get();
 
+        $totalNotaCredito = Venta::where('tipo', 'NC')->get();
+        $totalNotaDebito = Venta::where('tipo', 'ND')->get();
+
         return response()->json([
             'totalFacturas' => count($totalFacturas),
-            'totalBoletas' => count($totalBoletas)
+            'totalBoletas' => count($totalBoletas),
+            'totalNotaCredito' => count($totalNotaCredito),
+            'totalNotaDebito' => count($totalNotaDebito)
         ], 200);
     }
 
