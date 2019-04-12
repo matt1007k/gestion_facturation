@@ -14,10 +14,12 @@ use App\Product;
 use App\Venta;
 use App\Detalle;
 use App\User;
+use App\Note;
 
 use App\Helpers\ConvertNumToLetter;
 
 use App\Http\Requests\GenerarRequest;
+use App\Http\Requests\GeneratedNotaRequest;
 //use SoapClient;
 use PDF;
 
@@ -190,13 +192,16 @@ class VentasController extends Controller
             
             $convertirString = new ConvertNumToLetter();
             $total_string = $convertirString->convertir($comprobante->total);
+
+            $comprobante->estado = 'accepted';
+            $comprobante->save();
             
             if($comprobante->tipo === 'FA'){
                 
                 
                 // Generamos el code QR
                 $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
-                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||99999999|$firma_hash";
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||$comprobante->num_doc|$firma_hash";
                 \QrCode::format('png')->size(300)->generate($qr_text, $url);
     
                 $pdf = PDF::loadView('plantillas.factura', [
@@ -208,7 +213,7 @@ class VentasController extends Controller
                 
                 // Generamos el code QR
                 $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
-                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||99999999|$firma_hash";
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||$comprobante->num_doc|$firma_hash";
                 \QrCode::format('png')->size(300)->generate($qr_text, $url);
     
                 $pdf = PDF::loadView('plantillas.boleta', [
@@ -273,7 +278,13 @@ class VentasController extends Controller
         $empresa = User::findOrFail(Auth::id());
         
         $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
+        if(!$comprobante){
+            return response()->json([
+                'message' => 'El numero de comprobante no existe'
+            ], 500);
+        }
 
+        
         $content_cab = "";
         $content_det = "";
         $content_ley = "";
@@ -423,6 +434,101 @@ class VentasController extends Controller
         //             'Content-Disposition' => 'attachment; filename="'.$name_txt,
         //         ]);
     }
+
+    public function notatxt($num_comprobante){
+
+        $urlSF = Auth::user()->setting['sfs_url'];
+        $folder_generate = $urlSF."sunat_archivos/sfs/DATA/";
+
+        $tipo = "NOTA DE CRÉDITO ELECTRÓNICA";
+        $num_tipo = "";
+        $tipo_doc = "";
+        $empresa = User::findOrFail(Auth::id());
+        
+        $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
+
+        if(!$comprobante){
+            return response()->json([
+                'message' => 'El numero de comprobante no existe'
+            ], 500);
+        }
+
+        $detalle_nota = Note::where('note_id','=', $comprobante->id)->first();
+        $referencia_venta = Venta::findOrFail($detalle_nota->venta_id);
+        
+        $content_cab = "";
+        $content_det = "";
+        $content_ley = "";
+        $content_tri = "";
+        $hora_emision = Carbon::parse($comprobante->created_at)->format('h:i:s');
+
+        $convertir = new ConvertNumToLetter();
+        $detalle_ley = $convertir->convertir($comprobante->total);
+
+        if ($comprobante->tipo === 'NC') {
+            $tipo = "NOTA DE CRÉDITO ELECTRÓNICA";
+            $num_tipo = "07"; 
+            $tipo_doc = "DNI";   
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|000|1|$comprobante->num_doc|$comprobante->nombre|PEN|$detalle_nota->tipo_operacion|$detalle_nota->description|03|$referencia_venta->num_comprobante|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";        
+         //0101|2018-10-23|10:14:35|000|1|46941517|WONG SANTIAGO EDER DEL JOSE|PEN|05|DESCUENTO POR ITEM|03|B001-00000015|1.44|8.00|9.44|0.00|0.00|0.00|9.44|2.1|2.0 
+
+            // DETALLE VENTA
+            foreach ($comprobante->details as $detalle) {
+                $cantidad = (int)$detalle->cantidad;
+                $igv = number_format($detalle->subtotal * 0.18, 2);
+                $precioUntIgv = $detalle->subtotal + $igv;
+                $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
+            }
+
+            // LEYENDA
+            $content_ley .= "1000|$detalle_ley";
+
+            // TRIBUTO
+            $content_tri .= "1000|IGV|VAT|$comprobante->subtotal|$comprobante->igv";
+        }
+        elseif($comprobante->tipo === 'ND'){
+            $tipo = "NOTA DE DÉBITO ELECTRÓNICA";
+            $num_tipo = "08";
+            $tipo_doc = "RUC";
+            // CABECERA NOTA
+            $content_cab .= "0101|$comprobante->fecha_emision|$hora_emision|000|6|$comprobante->num_doc|$comprobante->nombre|PEN|$detalle_nota->tipo_operacion|$detalle_nota->description|01|$referencia_venta->num_comprobante|$comprobante->igv|$comprobante->subtotal|$comprobante->total|0.00|0.00|0.00|$comprobante->total|2.1|2.0";
+           
+            // DETALLE VENTA
+            foreach ($comprobante->details as $detalle) {
+                $cantidad = (int)$detalle->cantidad;
+                $igv = number_format($detalle->subtotal * 0.18, 2);
+                $precioUntIgv = $detalle->subtotal + $igv;
+                $content_det .= "NIU|$cantidad.000|$detalle->codigo|-|$detalle->descripcion|$detalle->precio|$igv|1000|$igv|$detalle->subtotal|IGV|VAT|10|18.00|-|0.00|0.00||||15.00|-|0.00|0.00|||15.00|$precioUntIgv|$detalle->subtotal|0.00\n";
+            }
+
+            // LEYENDA
+            //$comprobante->total
+            $content_ley .= "1000|$detalle_ley";
+
+            // TRIBUTO
+            $content_tri .= "1000|IGV|VAT|$comprobante->subtotal|$comprobante->igv";
+
+        }
+                        
+        //Recorro el directorio para leer los archivos que tiene
+        $name_cab = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.NOT';
+        $name_det = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.DET';
+        $name_ley = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.LEY';
+        $name_tri = $empresa['ruc'].'-'.$num_tipo.'-'.$comprobante->num_comprobante.'.TRI';
+
+        
+
+        // /mnt/d/ con subsystem linux on windowns 10
+        file_put_contents($folder_generate.$name_cab, $content_cab);
+        file_put_contents($folder_generate.$name_det, $content_det);
+
+        file_put_contents($folder_generate.$name_ley, $content_ley);
+        file_put_contents($folder_generate.$name_tri, $content_tri);
+        
+        return response()->json([
+            'message' => 'Archivos generados con exito'
+        ], 200);
+    }
     
     public function generar(GenerarRequest $request)
     {
@@ -460,22 +566,23 @@ class VentasController extends Controller
         }
     }
 
-    public function generarNota(Request $request)
+    public function generarNota(GeneratedNotaRequest $request)
     {
-        return $request;
+        
         $venta = new Venta();
         
         $venta->tipo = $request->tipo;
         $venta->num_comprobante = $request->num_serie.'-'.$request->num_emision;
         $venta->fecha_emision = Carbon::parse($request->fecha_emision)->format('Y-m-d');
-        $venta->tipo_doc = $request->tipo_doc;
+        $venta->tipo_doc = $request->comprobante['tipo_doc'];
         $venta->num_doc = $request->cliente['num_doc'];
         $venta->nombre = $request->cliente['nombre'];
-        $venta->direccion = $request->cliente['direccion'];
+        $venta->direccion = $request->comprobante['direccion'];
         $venta->subtotal = $request->subtotal;
         $venta->igv = $request->igv;
         $venta->total = $request->subtotal + $request->igv;
         $venta->user_id = $request->user_id;
+        
         
         if($venta->save()){
             foreach ($request->details as $detalle_venta) { 
@@ -492,26 +599,131 @@ class VentasController extends Controller
                 $detalle->save();
             }
 
+            $reference_sale = Venta::where('num_comprobante','=', $request->num_ref_venta)->first();
+            $reference_sale->estado = 'canceled';
+            $reference_sale->save();
 
-            return route('pdf', ['num_comprobante'=> $venta->num_comprobante]);
+            $note = new Note();
+            $note->tipo_operacion = $request->tipo_operacion;
+            $note->description = $request->description;
+            $note->note_id = $venta->id;
+            $note->venta_id = $reference_sale->id;
+            $note->save();
+
+            return response()->json([
+                'num_comprobante'=> $venta->num_comprobante,
+                'reference_venta'=> $request->num_ref_venta
+            ]);
         }
     }
 
        
-    public function edit($id)
+    public function notaPDF($num_comprobante)
     {
-        //
-    }
+        $tipo = "NOTA DE DÉBITO ELECTRÓNICA";
+        $tipoC = "";
+        $pdf = "";
+        $empresa = User::findOrFail(Auth::id());
+        $comprobante = Venta::where('num_comprobante','=', $num_comprobante)->first();
+        // dd($empresa['logo']);
+        // dd(public_path());
+        // dd(base_path().$empresa['logo']);
 
-    
-    public function update(Request $request, $id)
-    {
-       
-    }
+        $urlSF = Auth::user()->setting['sfs_url'];
+        $name_comprobant = "";
+        if($comprobante->tipo === 'NC') {
+            $tipo = "NOTA DE CRÉDITO ELECTRÓNICA";
+            $tipoC = "07";
+            $name_comprobant = $empresa->ruc."-".$tipoC."-".$num_comprobante;
+        }        
+        elseif($comprobante->tipo === 'ND'){
+            $tipo = "NOTA DE DÉBITO ELECTRÓNICA";
+            $tipoC = "08";
+            $name_comprobant = $empresa->ruc."-".$tipoC."-".$num_comprobante;
+        }
 
-    
-    public function destroy($id)
-    {
+        $file_R = $urlSF."sunat_archivos/sfs/RPTA/R".$name_comprobant.".zip";
+        $file_E = $urlSF."sunat_archivos/sfs/ENVIO/".$name_comprobant.".zip";
+
+        $rxml = $urlSF."sunat_archivos/sfs/RPTA/R-".$name_comprobant.".xml";
+        $exml = $urlSF."sunat_archivos/sfs/ENVIO/".$name_comprobant.".xml";
         
+        // get the absolute path to $file
+        $path_R = pathinfo(realpath($file_R), PATHINFO_DIRNAME);
+        $path_E = pathinfo(realpath($file_E), PATHINFO_DIRNAME);
+
+        $zip_R = new \ZipArchive;
+        $res_R = $zip_R->open($file_R);
+
+        $zip_E = new \ZipArchive;
+        $res_E = $zip_E->open($file_E);
+        if ($res_R === TRUE) {
+            // extract it to the path we determined above
+            $zip_R->extractTo($path_R);
+            $zip_E->extractTo($path_E);
+            $zip_R->close();
+            $zip_E->close();
+
+            $archivo_res = file_get_contents($rxml);
+            $res_xml = new \SimpleXMLElement($archivo_res);
+            $estado = $res_xml->xpath('//cbc:Description');
+    
+            $archivo_env = file_get_contents($exml);
+            $env_xml = new \SimpleXMLElement($archivo_env);
+            $firma = $env_xml->xpath('//ds:DigestValue');
+            $firma_hash = $firma[0][0];
+            $arrayNum = explode('-', $num_comprobante);
+            $serie = $arrayNum[0];
+            $numS = $arrayNum[1];
+            
+            $convertirString = new ConvertNumToLetter();
+            $total_string = $convertirString->convertir($comprobante->total);
+
+            $comprobante->estado = 'accepted';
+            $comprobante->save();
+
+            $detalle_nota = Note::where('note_id','=', $comprobante->id)->first();
+            $referencia_venta = Venta::findOrFail($detalle_nota->venta_id);
+            
+            if ($comprobante->tipo === 'NC') {
+                
+                // Generamos el code QR
+                $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||$comprobante->num_doc|$firma_hash";
+                \QrCode::format('png')->size(300)->generate($qr_text, $url);
+    
+                $pdf = PDF::loadView('plantillas.nota', [
+                    'comprobante' => $comprobante, 'tipo' => $tipo, 
+                    'empresa' => $empresa, 'total_string' => $total_string,
+                    'firma_hash' => $firma_hash,
+                    'detalle_nota' => $detalle_nota,
+                    'referencia_venta' => $referencia_venta,
+                ]);
+            }elseif($comprobante->tipo === 'ND'){
+                
+                
+                // Generamos el code QR
+                $url = base_path().'/storage/app/public/files/'.$num_comprobante.'.png';
+                $qr_text = "$empresa->ruc|$tipoC|$serie|$numS|$comprobante->igv|$comprobante->total|$comprobante->fecha_emision||$comprobante->num_doc|$firma_hash";
+                \QrCode::format('png')->size(300)->generate($qr_text, $url);
+    
+                $pdf = PDF::loadView('plantillas.nota', [
+                    'comprobante' => $comprobante, 'tipo' => $tipo, 
+                    'empresa' => $empresa, 'total_string' => $total_string,
+                    'firma_hash' => $firma_hash,
+                    'detalle_nota' => $detalle_nota,
+                    'referencia_venta' => $referencia_venta,
+                ]);
+            }
+            //$pdf->setPaper('a4', 'landscape');
+            return $pdf->stream();
+            // return view('plantillas.factura', ['comprobante' => $comprobante, 'tipo' => $tipo, 'empresa' => $empresa]);
+            
+        } else {
+            return response()->json([
+                'message' => 'No has enviado el comprobante a la sunat'
+            ], 500);
+        }
+ 
     }
 }

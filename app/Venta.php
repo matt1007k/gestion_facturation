@@ -29,6 +29,11 @@ class Venta extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function note()
+    {
+        return $this->hasOne('App\Note');
+    }
+
     public function scopeComprobante($query, $tipo){
         if ($tipo)
             return $query->where('user_id', Auth::id())

@@ -50,20 +50,31 @@ class HomeController extends Controller
     public function getCounts()
     {
         $products = Product::where('user_id', Auth::id())->get();
-        $sales = Venta::where('user_id', Auth::id())->get();
+        $sales = Venta::where('user_id', Auth::id())->where('estado','!=','canceled')
+                    ->where('tipo','!=','NC')->where('tipo','!=','ND')->get();
         $clients = Client::where('user_id', Auth::id())->get();
         $prodSales = Detalle::sum('cantidad');
+
+        $proSales = array();
+
+        foreach($sales as $sale){
+            foreach ($sale->details as $product) {
+                # code...
+                array_push($proSales, ['sales' => $product]);
+            }
+        }
 
         return response()->json([
             'totalProducts' => count($products),
             'totalSales' => count($sales),
             'totalClients' => count($clients),
-            'totalProdSales' => (int)$prodSales
+            'totalProdSales' => count($proSales)
         ], 200);
     }
 
     public function getVentas(Request $request){
-        $sales = Venta::where('user_id', Auth::id())->get(['total', 'created_at']);
+        $sales = Venta::where('user_id', Auth::id())->where('estado','!=','canceled')
+                ->where('tipo','!=','NC')->where('tipo','!=','ND')->get(['total', 'created_at']);
         $facturas = Venta::comprobante('FA')->get(['total', 'created_at', 'fecha_emision']);
         $boletas =  Venta::comprobante('BO')->get(['total', 'created_at', 'fecha_emision']);
         $ventas = array();

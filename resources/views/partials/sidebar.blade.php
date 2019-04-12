@@ -30,23 +30,11 @@
                     </li>
                 </ul>
             </li>
-            <li class="nav-item nav-dropdown">
-                <a href="#" class="nav-link nav-dropdown-toggle">
-                    <i class="nav-icon icon-notebook"></i>Reportes
+            <li class="nav-item">
+                <a href="{{ route('reportes.create') }}" class="nav-link">
+                    <i class="nav-icon icon-pie-chart"></i>Reportes
                 </a>
-                <ul class="nav-dropdown-items">
-                    <li class="nav-item">
-                        <a href="{{ route('reportes.create') }}" class="nav-link">
-                            <i class="nav-icon icon-calendar"></i>
-                            Realizar un reporte
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('reportes.index') }}" class="nav-link">
-                            <i class="nav-icon icon-list"></i> Lista de Reportes
-                        </a>
-                    </li>
-                </ul>
+                
             </li>
        
         </ul>

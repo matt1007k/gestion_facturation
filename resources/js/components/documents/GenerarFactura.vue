@@ -41,7 +41,7 @@
             </div>
 
             <div class="col-md-3">
-              <label for="codigo">Serie de Emision (*)</label>
+              <label for="codigo">Serie de Emisión (*)</label>
               <input
                 type="text"
                 class="form-control"
@@ -53,7 +53,7 @@
               <div class="invalid-feedback" v-if="errors.num_serie">{{errors.num_serie[0]}}</div>
             </div>
             <div class="col-md-3">
-              <label for="tipo">Número de Emision (*)</label>
+              <label for="tipo">Número de Emisión (*)</label>
               <input
                 type="text"
                 class="form-control"
@@ -98,7 +98,7 @@
               <div class="invalid-feedback" v-if="errors.num_doc">{{errors.num_doc[0]}}</div>
             </div>-->
             <div class="col-md-6">
-              <label for="nombre">Apellidos y nombres o razon social (*)</label>
+              <label for="nombre">Apellidos y nombres o razón social (*)</label>
               <multiselect
                 v-model="cliente"
                 :options="options_clients"
@@ -122,13 +122,13 @@
               </b-button>
             </div>
             <div class="col-md-6">
-              <label for="direccion">Direccion del cliente</label>
+              <label for="direccion">Dirección del cliente</label>
               <input
                 type="text"
                 class="form-control"
                 v-model="direccion"
                 id="direccion"
-                placeholder="Ingrese la direccion del cliente"
+                placeholder="Ingrese la dirección del cliente"
               >
             </div>
           </div>
@@ -149,7 +149,7 @@
                 <thead>
                   <th class="text-center">#</th>
                   <th class="text-center">Codigo</th>
-                  <th class="text-center">Descripcion</th>
+                  <th class="text-center">Descripción</th>
                   <th class="text-center">Precio</th>
                   <th class="text-center">Cantidad</th>
                   <th class="text-center">Unidad</th>
@@ -161,7 +161,14 @@
                     <tr v-for="(item, index) in cart" :key="item.id">
                       <td>{{index + 1}}</td>
                       <td>{{item.code}}</td>
-                      <td class="w-50">{{item.description}}</td>
+                      <td class="w-50">
+                        <textarea
+                          v-model="item.description"
+                          cols="3"
+                          class="form-control"
+                          placeholder="Ingrese una descripción detallada"
+                        ></textarea>
+                      </td>
                       <td class="text-right">{{item.price}}</td>
                       <td>
                         <input
@@ -175,7 +182,9 @@
                       </td>
 
                       <td class="text-right">Kls</td>
-                      <td class="text-right">{{ parseFloat(item.price * item.quantity).toFixed(2)}}</td>
+                      <td
+                        class="text-right"
+                      >{{ parseFloat((item.price * item.quantity) + ((item.price * item.quantity) * 0.18)).toFixed(2)}}</td>
                       <td>
                         <button
                           type="button"

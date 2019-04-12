@@ -61,12 +61,12 @@
             width: 250px;
         }
         .header .right .title{
-            font-size: 15px;
-            font-weight: normal;
+            font-size: 13px;
+            font-weight: bold;
         }
         .header .right .number{
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 15px;
+            font-weight: normal;
         }
         .header .empresa{
             width: auto;
@@ -100,7 +100,6 @@
                         </div>
                         <div class="empresa">
                             <h2 class="text-normal no-margin">{{$empresa['name']}}</h4>
-                            <h5 class="text-normal no-margin">RUC {{$empresa['ruc']}}</h5>
                             <p class="no-margin">Telefono / Celular: {{$empresa['telefono']}}</p>
                             <p class="no-margin">Dirección: {{$empresa['direccion']}}</p>
                         </div>
@@ -108,6 +107,7 @@
                     </td>
                     <td class="right text-center">
                         <h3 class="no-margin title"> {{$tipo}} </h3>
+                        <h3 class="no-margin number"> RUC {{$empresa['ruc']}} </h3>
                         <p class="no-margin number">{{$comprobante['num_comprobante']}}</p>
                     </td>
                 </tr>
@@ -140,7 +140,7 @@
         <thead>
             <tr class="title">
                 <th class="text-center" style="width: 100px">Cantidad</th>                                   
-                <th class="text-left" style="width: 300px">Descripción</th>
+                <th class="text-left" style="width: auto;">Descripción</th>
                 <th class="text-right">Precio</th>
                 <th class="text-right" style="width: 100px">Descuento</th>
                 <th class="text-center" style="width: 100px">Unidad</th>

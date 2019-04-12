@@ -36,6 +36,7 @@
           <th>Cliente</th>
           <th>Comprobante</th>
           <th>Estado</th>
+          <th>T.Gravado</th>
           <th>Igv</th>
           <th>Total</th>
           <th>Acción</th>
@@ -49,12 +50,18 @@
             >
               <td>{{index + 1}}</td>
               <td>{{sale.fecha_emision}}</td>
-              <td>{{sale.nombre}}, {{sale.tipo_doc}} {{sale.num_doc}}</td>
-              <td>
+              <td style="font-size: 13px;">{{sale.nombre}}, {{sale.tipo_doc}} {{sale.num_doc}}</td>
+              <td style="font-size: 13px;">
                 <template v-if="sale.tipo === 'FA'">{{sale.num_comprobante}}, FACTURA ELECTRÓNICA</template>
                 <template
                   v-else-if="sale.tipo === 'BO'"
                 >{{sale.num_comprobante}}, BOLETA DE VENTA ELECTRÓNICA</template>
+                <template
+                  v-else-if="sale.tipo === 'NC'"
+                >{{sale.num_comprobante}}, NOTA DE CRÉDITO ELECTRÓNICA</template>
+                <template
+                  v-else-if="sale.tipo === 'ND'"
+                >{{sale.num_comprobante}}, NOTA DE DÉBITO ELECTRÓNICA</template>
               </td>
               <td>
                 <template v-if="sale.estado === 'registered'">
@@ -67,6 +74,7 @@
                   <span class="badge badge-danger">Anulado</span>
                 </template>
               </td>
+              <td>{{sale.subtotal}}</td>
               <td>{{sale.igv}}</td>
               <td>{{sale.total}}</td>
               <td>
@@ -78,7 +86,7 @@
                   v-b-tooltip.hover
                   title="Generar archivos"
                   size="sm"
-                  @click="downloadTXT(sale.num_comprobante)"
+                  @click="downloadTXT(sale.num_comprobante, sale.tipo)"
                 >
                   <span>TXT</span>
                 </b-button>
@@ -87,11 +95,13 @@
                   v-b-tooltip.hover
                   title="Imprimir comprobante"
                   size="sm"
-                  @click="imprimirPDF(sale.num_comprobante)"
+                  @click="imprimirPDF(sale.num_comprobante, sale.tipo)"
                 >
                   <i class="icon-printer icons"></i>
                 </b-button>
-                <template v-if="sale.estado !== 'canceled'">
+                <template
+                  v-if="sale.estado !== 'canceled' && sale.tipo !== 'NC' && sale.tipo !== 'ND'"
+                >
                   <b-button
                     variant="warning"
                     v-b-tooltip.hover
@@ -177,47 +187,110 @@ export default {
       this.pagination.current_page = page;
       this.getSales(page);
     },
-    downloadPDF(num_comprobante) {
+    downloadPDF(num_comprobante, tipo) {
       if (!num_comprobante) {
         return;
       }
-      return (location.href = `/descargar/${num_comprobante}`);
-    },
-    downloadTXT(num_comprobante) {
-      if (!num_comprobante) {
+      if (!tipo) {
         return;
       }
-      axios
-        .get(`/txt/${num_comprobante}`)
-        .then(result => {
-          let config = {
-            text: result.data.message,
-            button: "ok"
-          };
 
-          this.$snack.success(config);
-        })
-        .catch(err => console.log(err));
+      if (tipo === "BO" || tipo === "FA") {
+        return (location.href = `/descargar/${num_comprobante}`);
+      } else if (tipo === "NC" || tipo === "ND") {
+        return (location.href = `/nota-pdf/${num_comprobante}`);
+      }
     },
-    imprimirPDF(num_comprobante) {
+    downloadTXT(num_comprobante, tipo) {
       if (!num_comprobante) {
         return;
       }
 
-      axios
-        .get(`/comprobante/${num_comprobante}`)
-        .then(result => {
-          return (location.href = `/comprobante/${num_comprobante}`);
-          this.$snack.success(config);
-        })
-        .catch(err => {
-          let config = {
-            text: err.response.data.message,
-            button: "ok"
-          };
-          this.$snack.danger(config);
-          console.log(err.response);
-        });
+      if (!tipo) {
+        return;
+      }
+
+      if (tipo === "BO" || tipo === "FA") {
+        axios
+          .get(`/txt/${num_comprobante}`)
+          .then(result => {
+            let config = {
+              text: result.data.message,
+              button: "ok"
+            };
+
+            this.$snack.success(config);
+          })
+          .catch(err => {
+            let config = {
+              text: error.response.data.message,
+              button: "ok"
+            };
+
+            this.$snack.danger(config);
+          });
+      } else if (tipo === "NC" || tipo === "ND") {
+        axios
+          .get(`/nota-txt/${num_comprobante}`)
+          .then(result => {
+            let config = {
+              text: result.data.message,
+              button: "ok"
+            };
+
+            this.$snack.success(config);
+          })
+          .catch(err => {
+            let config = {
+              text: error.response.data.message,
+              button: "ok"
+            };
+
+            this.$snack.danger(config);
+          });
+      } else {
+        return;
+      }
+    },
+    imprimirPDF(num_comprobante, tipo) {
+      if (!num_comprobante) {
+        return;
+      }
+      if (!tipo) {
+        return;
+      }
+
+      if (tipo === "BO" || tipo === "FA") {
+        axios
+          .get(`/comprobante/${num_comprobante}`)
+          .then(result => {
+            return (location.href = `/comprobante/${num_comprobante}`);
+            this.$snack.success(config);
+          })
+          .catch(err => {
+            let config = {
+              text: err.response.data.message,
+              button: "ok"
+            };
+            this.$snack.danger(config);
+            console.log(err.response);
+          });
+      } else if (tipo === "NC" || tipo === "ND") {
+        axios
+          .get(`/nota-pdf/${num_comprobante}`)
+          .then(result => {
+            return (location.href = `/nota-pdf/${num_comprobante}`);
+            this.$snack.success(config);
+          })
+          .catch(err => {
+            let config = {
+              text: err.response.data.message,
+              button: "ok"
+            };
+            this.$snack.danger(config);
+            console.log(err.response);
+          });
+      }
     },
     generarNota(num_comprobante) {
       return (location.href = `/documentos/nota/${num_comprobante}`);

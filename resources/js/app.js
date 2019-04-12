@@ -97,9 +97,9 @@ const app = new Vue({
                 localStorage.setItem("bolSerie", "B001");
                 localStorage.setItem("bolEmision", bolEmision);
 
-                localStorage.setItem("NCSerie", "BC01");
+                localStorage.setItem("NCSerie", "BC1B");
                 localStorage.setItem("NCEmision", NotaCreditoEmision);
-                localStorage.setItem("NDSerie", "BD01");
+                localStorage.setItem("NDSerie", "FD1A");
                 localStorage.setItem("NDEmision", NotaDebitoEmision);
             })
             .catch(err => console.log(err));

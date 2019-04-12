@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function() {
     // Notas de credito
     Route::post('/notas', 'Admin\VentasController@generarNota')->name('notas.generar');
     Route::get('/nota-pdf/{num_comprobante}', 'Admin\VentasController@notaPDF')->name('notas.pdf');
+    Route::get('/nota-txt/{num_comprobante}', 'Admin\VentasController@notatxt')->name('notas.txt');
+
 
     Route::get('/txtcab/{num_comprobante}', 'Admin\VentasController@txtcab')->name('txtcab');
 

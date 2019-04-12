@@ -1,9 +1,9 @@
 <template>
   <!-- Modal Component -->
   <b-modal
-    id="modalComprobante"
+    id="modalNota"
     ref="modal"
-    title="Imprimir o descargar comprobante"
+    title="Imprimir o descargar nota"
     hide-footer
     size="xs"
     class="modal-primary"
@@ -27,25 +27,25 @@
 </template>
 
 <script>
-import { required, minLength, number } from "vuelidate/lib/validators";
 export default {
-  name: "modal-comprobante",
+  name: "modal-nota",
   data() {
     return {
       url: "http://localhost:8000/documentos",
-      num_comprobante: ""
+      num_comprobante: "",
+      num_reference_venta: ""
     };
   },
   methods: {
     hideModal() {
-      this.$root.$emit("bv::hide::modal", "modalComprobante");
+      this.$root.$emit("bv::hide::modal", "modalNota");
       // this.url = process.env.MIX_APP_URL
     },
     printComprobante() {
       axios
-        .get(`/comprobante/${this.num_comprobante}`)
+        .get(`/nota-pdf/${this.num_comprobante}`)
         .then(result => {
-          return (location.href = `/comprobante/${this.num_comprobante}`);
+          return (location.href = `/nota-pdf/${this.num_comprobante}`);
         })
         .catch(err => {
           let config = {
@@ -58,7 +58,7 @@ export default {
     },
     generateFiles() {
       axios
-        .get(`/txt/${this.num_comprobante}`)
+        .get(`/nota-txt/${this.num_comprobante}`)
         .then(result => {
           let config = {
             text: result.data.message,
@@ -66,7 +66,7 @@ export default {
           };
 
           this.$snack.success(config);
-          this.$root.$emit("bv::hide::modal", "modalComprobante");
+          this.$root.$emit("bv::hide::modal", "modalNota");
         })
         .catch(err => console.log(err));
     },

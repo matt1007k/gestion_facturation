@@ -28,25 +28,34 @@
             </div>
             <div class="col-md-5">
               <label for="tipo_operation">Tipo de {{tipo_nota.length > 0 ? tipo_nota : 'nota'}} (*)</label>
-              <b-form-select
+              <select
+                id="tipo_operation"
                 v-model="tipo_operation"
-                :options="options_operation"
-                :state="errors.tipo_operation"
-              ></b-form-select>
+                class="form-control"
+                :class="{'is-invalid': errors.tipo_operacion}"
+              >
+                <option value disabled hidden>----- Seleccione una operación -----</option>
+                <option
+                  v-for="(tipo, index) in options_operation"
+                  :key="index"
+                  :value="tipo.value"
+                >{{tipo.text}}</option>
+              </select>
               <div
                 class="invalid-feedback"
-                v-if="errors.tipo_operation"
-              >{{errors.tipo_operation[0]}}</div>
+                v-if="errors.tipo_operacion"
+              >{{errors.tipo_operacion[0]}}</div>
             </div>
             <div class="col-md-4">
               <label for="description">Descripción (*)</label>
-              <b-form-textarea
+              <textarea
                 id="description"
                 v-model="description"
                 placeholder="Ingrese una descripción"
-                :state="errors.description"
+                class="form-control"
+                :class="{'is-invalid': errors.description}"
                 rows="3"
-              ></b-form-textarea>
+              ></textarea>
               <div class="invalid-feedback" v-if="errors.description">{{errors.description[0]}}</div>
             </div>
           </div>
@@ -134,7 +143,14 @@
                     <tr v-for="(item, index) in cart" :key="item.id">
                       <td>{{index + 1}}</td>
                       <td>{{item.code}}</td>
-                      <td class="w-50">{{item.description}}</td>
+                      <td class="w-50">
+                        <textarea
+                          v-model="item.description"
+                          cols="3"
+                          class="form-control"
+                          placeholder="Ingrese una descripción detallada"
+                        ></textarea>
+                      </td>
                       <td class="text-right">{{item.price}}</td>
                       <td>
                         <input
@@ -195,7 +211,7 @@
                   <label class="font-weight-bold text-primary">s/. {{Total()}}</label>
                 </div>
               </div>
-              <div class="row row mt-3">
+              <div class="row mt-3">
                 <div class="col-md-12 d-flex justify-content-between">
                   <input
                     type="button"
@@ -217,7 +233,7 @@
             @nameModel="searchInput"
             @ChangePage="changePage"
           ></modal-product>
-          <!-- <modal-comprobante></modal-comprobante> -->
+          <modal-nota></modal-nota>
         </form>
       </div>
     </div>
@@ -228,7 +244,7 @@
 import DatePicker from "vue2-datepicker";
 
 import ModalProduct from "../modals/ModalProduct.vue";
-// import ModalComprobante from "./modals/ModalComprobante.vue";
+import ModalNota from "./ModalNota.vue";
 
 export default {
   props: {
@@ -239,7 +255,7 @@ export default {
   },
   components: {
     ModalProduct,
-    // ModalComprobante,
+    ModalNota,
     DatePicker
   },
   name: "generar-nota",
@@ -249,16 +265,10 @@ export default {
       isLoading: false,
       tipos: [],
       tipo_nota: "",
-      tipo_operation: "null",
-      options_operation: [
-        { value: null, text: "---- Seleccione operación ----" }
-      ],
-      operation_credito: [
-        { value: null, text: "---- Seleccione operación ----" }
-      ],
-      operation_debito: [
-        { value: null, text: "---- Seleccione operación ----" }
-      ],
+      tipo_operation: null,
+      options_operation: [],
+      operation_credito: [],
+      operation_debito: [],
       description: "",
       cart: [],
       products: [],
@@ -332,11 +342,11 @@ export default {
         comprobante: this.comprobante,
         tipo: this.$data.tipo,
         tipo_doc: this.tipo_nota,
-        tipo_operation: this.tipo_operation,
+        tipo_operacion: this.tipo_operation,
         fecha_emision: this.fecha_emision,
         num_serie: this.num_serie,
         num_emision: this.num_emision,
-        // num_doc: this.num_doc,
+        num_ref_venta: this.num_comprobant,
         cliente: cliente,
         description: this.description,
         details: this.cart,
@@ -349,12 +359,10 @@ export default {
         .post("/notas", data)
         .then(result => {
           console.log(result);
-          this.$children[4].url = result.data;
-          this.$children[4].num_comprobante = `${this.num_serie}-${
-            this.num_emision
-          }`;
-          this.$root.$emit("bv::show::modal", "modalComprobante");
-          this.resetField();
+          this.$children[2].url = result.data.num_comprobante;
+          this.$children[2].num_comprobante = result.data.num_comprobante;
+          this.$children[2].num_reference_venta = result.data.reference_venta;
+          this.$root.$emit("bv::show::modal", "modalNota");
         })
         .catch(error => (this.errors = error.response.data.errors));
     },
@@ -431,13 +439,7 @@ export default {
       return parseFloat(total).toFixed(2);
     },
     resetField() {
-      this.tipo = "";
-
-      this.fecha_emision = new Date();
-      this.num_serie = "";
-      this.num_emision = "";
-
-      this.cart = [];
+      location.href = "/documentos";
     },
     tipoDocumento(ev) {
       console.log(ev.target.value);
