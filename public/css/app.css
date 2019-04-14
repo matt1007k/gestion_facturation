@@ -21083,6 +21083,14 @@ table.b-table.b-table-selectable > tbody > tr {
   display: block;
 }
 
+.no-margin {
+  margin: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
 .status-registered {
   border-left: 10px solid #3490dc;
 }

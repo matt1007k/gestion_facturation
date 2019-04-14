@@ -46,8 +46,11 @@ Route::middleware('auth')->group(function() {
     Route::get('/perfil', 'Admin\UsersController@perfil')->name('perfil');
     Route::get('/configuraciones', 'Admin\SettingsController@setting')->name('setting');
 
-    Route::get('/reportes', 'Admin\ReportsController@index')->name('reportes.index');
     Route::get('/generar-reporte', 'Admin\ReportsController@create')->name('reportes.create');
+    Route::post('/reportes', 'Admin\ReportsController@generarReporte')->name('reportes.generar');
+
+    Route::get('/reportes/pdf/{fecha_inicio}/{fecha_final}/{tipo}', 'Admin\ReportsController@exportarPDF')->name('reportes.exportar.pdf');
+    Route::post('/reportes/excel', 'Admin\ReportsController@exportarExcel')->name('reportes.exportar.excel');
 
     Route::get('/json', function(){
         $rxml = "D:/Code/RES/R11069415177-03-B001-0000005/R-11069415177-03-B001-0000005.xml";

@@ -151,7 +151,7 @@
                 <th class="text-right">Precio</th>
                 <th class="text-right" style="width: 100px">Descuento</th>
                 <th class="text-center" style="width: 100px">Unidad</th>
-                <th class="text-right" style="width: 100px">Importe</th>
+                <th class="text-right" style="width: 80px">Importe</th>
             </tr>            
         </thead>
         <tbody> 
@@ -163,7 +163,7 @@
                     <td class="text-right">{{$detail['precio']}} </td>
                     <td class="text-right">{{$detail['descuento']}}</td>
                     <td class="text-center">{{$detail['unidad']}}</td>
-                    <td class="text-right">{{$detail['subtotal']}}</td>
+                    <td class="text-right">{{number_format(($detail['subtotal']  + ($detail['subtotal'] * 0.18)), 2)}}</td>
                 </tr>
             @endforeach          
             

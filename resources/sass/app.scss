@@ -29,6 +29,14 @@
     display: block;
 }
 
+.no-margin {
+    margin: 0;
+}
+
+.no-padding {
+    padding: 0;
+}
+
 .status-registered {
     border-left: 10px solid $primary;
 }

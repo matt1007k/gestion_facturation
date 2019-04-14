@@ -157,7 +157,7 @@
                 <th class="text-right">Precio</th>
                 <th class="text-right" style="width: 100px">Descuento</th>
                 <th class="text-center" style="width: 100px">Unidad</th>
-                <th class="text-right" style="width: 100px">Importe</th>
+                <th class="text-right" style="width: 80px">Importe</th>
             </tr>            
         </thead>
         <tbody> 

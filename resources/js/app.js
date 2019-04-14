@@ -73,6 +73,11 @@ Vue.component(
     require("./components/documents/notes/GenerarNota.vue").default
 );
 
+Vue.component(
+    "generar-reporte",
+    require("./components/reports/GenerarReporte.vue").default
+);
+
 Vue.component("dashboard", require("./components/home/Dashboard.vue").default);
 
 const auth =
