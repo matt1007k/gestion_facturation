@@ -99,7 +99,7 @@
                         
                     </td>
                     <td class="right text-right" style="top: 0">
-                       <p>Fecha de reporte: 2018-04-15</p>
+                       <p>Fecha de reporte: {{(new \DateTime())->format('Y-m-d')}}</p>
                     </td>
                </tr>
            </tbody>
@@ -108,17 +108,17 @@
         <table style="width: 100%">
             <thead>
                 <tr class="title">
-                    <th>#</th>
-                    <th>Tipo comprobante</th>
-                    <th>Número</th>
-                    <th>Fecha emisión</th>
-                    <th style="width: auto">Cliente</th>
-                    <th>Num. Doc.</th>
-                    <th>Estado</th>
-                    <th>Moneda</th>
-                    <th>T. Gravado</th>
-                    <th>T. IGV</th>
-                    <th>Total</th>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Tipo comprobante</th>
+                    <th class="text-center">Número</th>
+                    <th class="text-center">Fecha emisión</th>
+                    <th style="width: auto" class="text-center">Cliente</th>
+                    <th class="text-center">Num. Doc.</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Moneda</th>
+                    <th class="text-center">T. Gravado</th>
+                    <th class="text-center">T. IGV</th>
+                    <th class="text-center">Total</th>
                 </tr>
             </thead>
             <tbody>

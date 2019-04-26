@@ -6,9 +6,9 @@
           <button class="btn btn-danger" @click="exportPDF()">
             <i class="fa fa-file-pdf-o"></i> Exportar PDF
           </button>
-          <button class="btn btn-success" @click="exportExcel()">
+          <!-- <button class="btn btn-success" @click="exportExcel()">
             <i class="fa fa-file-excel-o"></i> Exportar Excel
-          </button>
+          </button>-->
         </div>
       </div>
     </template>

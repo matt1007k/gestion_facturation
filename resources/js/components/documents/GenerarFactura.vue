@@ -26,6 +26,26 @@
               </select>
               <div class="invalid-feedback" v-if="errors.tipo">{{errors.tipo[0]}}</div>
             </div>
+            <div class="col-md-3">
+              <label for="fecha">Tipo de venta (*)</label>
+              <select
+                v-model="tipo_operacion"
+                id="tipo_operacion"
+                class="form-control"
+                :class="{'is-invalid': errors.tipo_operacion}"
+              >
+                <option value disabled hidden>----- Seleccionar -----</option>
+                <option
+                  v-for="(tipo_operacion, index) in options_tipos_operacion"
+                  :key="index"
+                  :value="tipo_operacion.value"
+                >{{tipo_operacion.text}}</option>
+              </select>
+              <div
+                class="invalid-feedback"
+                v-if="errors.tipo_operacion"
+              >{{errors.tipo_operacion[0]}}</div>
+            </div>
           </div>
           <h4>Comprobante</h4>
           <div class="row mb-3">
@@ -306,6 +326,11 @@ export default {
       num_serie: "",
       num_emision: "",
       direccion: "",
+      tipo_operacion: "",
+      options_tipos_operacion: [
+        { value: "Bienes", text: "Bienes" },
+        { value: "Servicios", text: "Servicios" }
+      ],
       errors: {}
     };
   },
@@ -333,6 +358,7 @@ export default {
         num_serie: this.num_serie,
         num_emision: this.num_emision,
         // num_doc: this.num_doc,
+        tipo_operacion: this.tipo_operacion,
         cliente: this.cliente,
         direccion: this.direccion,
         details: this.cart,

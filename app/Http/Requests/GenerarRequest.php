@@ -23,14 +23,15 @@ class GenerarRequest extends FormRequest
      */
     public function rules()
     {
-        return [    
+        return [
             'tipo' => 'required',
-            'tipo_doc' => 'required', 
+            'tipo_doc' => 'required',
             'fecha_emision' => 'required',
             'num_serie' => 'required',
             'num_emision' => 'required|numeric',
             'cliente.nombre' => 'required',
             'details' => 'required',
+            'tipo_operacion' => 'required',
         ];
     }
 }

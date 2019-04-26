@@ -33,6 +33,7 @@
         <thead>
           <th>#</th>
           <th>Fecha Emision</th>
+          <th>Tipo de Venta</th>
           <th>Cliente</th>
           <th>Comprobante</th>
           <th>Estado</th>
@@ -50,6 +51,7 @@
             >
               <td>{{index + 1}}</td>
               <td>{{sale.fecha_emision}}</td>
+              <td>{{sale.operacion}}</td>
               <td style="font-size: 13px;">{{sale.nombre}}, {{sale.tipo_doc}} {{sale.num_doc}}</td>
               <td style="font-size: 13px;">
                 <template v-if="sale.tipo === 'FA'">{{sale.num_comprobante}}, FACTURA ELECTRÓNICA</template>
@@ -65,7 +67,7 @@
               </td>
               <td>
                 <template v-if="sale.estado === 'registered'">
-                  <span class="badge badge-primary">Registrado</span>
+                  <span class="badge badge-warning">Registrado</span>
                 </template>
                 <template v-else-if="sale.estado === 'accepted'">
                   <span class="badge badge-success">Aceptado</span>
@@ -82,7 +84,7 @@
                   <span>PDF</span>
                 </b-button>-->
                 <b-button
-                  variant="info"
+                  variant="primary"
                   v-b-tooltip.hover
                   title="Generar archivos"
                   size="sm"
@@ -103,7 +105,7 @@
                   v-if="sale.estado !== 'canceled' && sale.tipo !== 'NC' && sale.tipo !== 'ND'"
                 >
                   <b-button
-                    variant="warning"
+                    variant="danger"
                     v-b-tooltip.hover
                     title="Generar Nota"
                     size="sm"

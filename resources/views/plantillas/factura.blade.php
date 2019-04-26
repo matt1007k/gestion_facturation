@@ -167,6 +167,11 @@
                 </tr>
             @endforeach          
             
+            <tr class="text-bold"  style="height: 30px;">
+                <td colspan="3"></td>                                   
+                <td colspan="2" class="text-right">IMPORTE TOTAL: PEN</td>
+                <td class="text-right">{{$comprobante['total']}}</td>
+            </tr>
             <tr class="text-bold">
                 <td colspan="3"></td>                                   
                 <td colspan="2" class="text-right">OP. GRAVADAS: PEN</td>

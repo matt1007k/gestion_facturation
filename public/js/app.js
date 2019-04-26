@@ -3067,6 +3067,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {},
@@ -3606,6 +3608,26 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3658,6 +3680,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       num_serie: "",
       num_emision: "",
       direccion: "",
+      tipo_operacion: "",
+      options_tipos_operacion: [{
+        value: "Bienes",
+        text: "Bienes"
+      }, {
+        value: "Servicios",
+        text: "Servicios"
+      }],
       errors: {}
     };
   },
@@ -3688,6 +3718,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         num_serie: this.num_serie,
         num_emision: this.num_emision,
         // num_doc: this.num_doc,
+        tipo_operacion: this.tipo_operacion,
         cliente: this.cliente,
         direccion: this.direccion,
         details: this.cart,
@@ -99794,6 +99825,8 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(sale.fecha_emision))]),
                       _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(sale.operacion))]),
+                      _vm._v(" "),
                       _c("td", { staticStyle: { "font-size": "13px" } }, [
                         _vm._v(
                           _vm._s(sale.nombre) +
@@ -99848,7 +99881,7 @@ var render = function() {
                             ? [
                                 _c(
                                   "span",
-                                  { staticClass: "badge badge-primary" },
+                                  { staticClass: "badge badge-warning" },
                                   [_vm._v("Registrado")]
                                 )
                               ]
@@ -99893,7 +99926,7 @@ var render = function() {
                                 }
                               ],
                               attrs: {
-                                variant: "info",
+                                variant: "primary",
                                 title: "Generar archivos",
                                 size: "sm"
                               },
@@ -99951,7 +99984,7 @@ var render = function() {
                                       }
                                     ],
                                     attrs: {
-                                      variant: "warning",
+                                      variant: "danger",
                                       title: "Generar Nota",
                                       size: "sm"
                                     },
@@ -100083,6 +100116,8 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("th", [_vm._v("Fecha Emision")]),
       _vm._v(" "),
+      _c("th", [_vm._v("Tipo de Venta")]),
+      _vm._v(" "),
       _c("th", [_vm._v("Cliente")]),
       _vm._v(" "),
       _c("th", [_vm._v("Comprobante")]),
@@ -100202,6 +100237,72 @@ var render = function() {
                 _vm.errors.tipo
                   ? _c("div", { staticClass: "invalid-feedback" }, [
                       _vm._v(_vm._s(_vm.errors.tipo[0]))
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "col-md-3" }, [
+                _c("label", { attrs: { for: "fecha" } }, [
+                  _vm._v("Tipo de venta (*)")
+                ]),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.tipo_operacion,
+                        expression: "tipo_operacion"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    class: { "is-invalid": _vm.errors.tipo_operacion },
+                    attrs: { id: "tipo_operacion" },
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.tipo_operacion = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "option",
+                      { attrs: { value: "", disabled: "", hidden: "" } },
+                      [_vm._v("----- Seleccionar -----")]
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.options_tipos_operacion, function(
+                      tipo_operacion,
+                      index
+                    ) {
+                      return _c(
+                        "option",
+                        {
+                          key: index,
+                          domProps: { value: tipo_operacion.value }
+                        },
+                        [_vm._v(_vm._s(tipo_operacion.text))]
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _vm.errors.tipo_operacion
+                  ? _c("div", { staticClass: "invalid-feedback" }, [
+                      _vm._v(_vm._s(_vm.errors.tipo_operacion[0]))
                     ])
                   : _vm._e()
               ])
@@ -104219,22 +104320,6 @@ var render = function() {
                   [
                     _c("i", { staticClass: "fa fa-file-pdf-o" }),
                     _vm._v(" Exportar PDF\n        ")
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-success",
-                    on: {
-                      click: function($event) {
-                        return _vm.exportExcel()
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fa fa-file-excel-o" }),
-                    _vm._v(" Exportar Excel\n        ")
                   ]
                 )
               ])
